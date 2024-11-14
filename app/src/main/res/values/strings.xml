@@ -1,0 +1,4 @@
+<resources>
+    <string name="app_name">Chat</string>
+    <string name="underline"><u>Resend Code</u></string>
+</resources>

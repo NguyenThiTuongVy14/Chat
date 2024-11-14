@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:clipToPadding="false"
+    android:overScrollMode="never"
+    android:scrollbars="none"
+
+    tools:context=".activities.Login"
+    android:background="@drawable/gradient_background">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_horizontal"
+        android:orientation="vertical"
+        android:layout_margin="@dimen/_20ssp">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="63dp"
+            android:layout_marginTop="@dimen/_50ssp"
+            android:fontFamily="@font/billabong"
+            android:gravity="center"
+            android:text="Hi!"
+            android:textColor="#020024"
+            android:textSize="@dimen/_40ssp"
+            android:textStyle="bold"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_marginTop="@dimen/_5ssp"
+            android:fontFamily="sans-serif-medium"
+            android:text="Create a new Account"
+            android:textColor="#808080"
+            android:textSize="@dimen/_13ssp" />
+
+
+        <EditText
+            android:id="@+id/txtEmailSU"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/_45sdp"
+            android:layout_marginTop="@dimen/_45sdp"
+            android:background="@drawable/input_background"
+            android:hint="Email Address"
+            android:paddingStart="@dimen/_16sdp"
+            android:paddingEnd="@dimen/_16sdp"
+            android:inputType="textEmailAddress"
+            android:importantForAutofill="no"
+            android:textSize="@dimen/_13ssp"
+            android:textColor="@color/black"
+            android:imeOptions="actionNext"/>
+        <EditText
+            android:id="@+id/txtPassSU"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/_45sdp"
+            android:layout_marginTop="@dimen/_30sdp"
+            android:background="@drawable/input_background"
+            android:hint="Password"
+            android:paddingStart="@dimen/_16sdp"
+            android:paddingEnd="@dimen/_16sdp"
+            android:inputType="textPassword"
+            android:importantForAutofill="no"
+            android:textSize="@dimen/_13ssp"
+            android:textColor="@color/black"
+            android:imeOptions="actionNext"/>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/_30ssp"
+            android:orientation="horizontal"/>
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnSignUp"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/_45sdp"
+            android:layout_marginTop="@dimen/_20sdp"
+            android:text="CONTINUE"
+            android:background="@drawable/btn_background"
+            app:backgroundTint="@android:color/white"
+            android:textSize="@dimen/_13sdp"
+            android:textColor="#020024"
+            app:cornerRadius="@dimen/_9sdp"/>
+        <TextView
+            android:id="@+id/backLogin"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/_14ssp"
+            android:gravity="center"
+            android:text="Already have an account?"
+            android:textColor="#808080"
+            android:fontFamily="sans-serif-medium"/>
+    </LinearLayout>
+
+</ScrollView>
