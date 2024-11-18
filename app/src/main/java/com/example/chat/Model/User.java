@@ -6,12 +6,21 @@ public class User {
     private String numberPhone;
     private String name;
     private Bitmap avataImage;
+    private int loai;
 
     public User() {
     }
 
     public String getNumberPhone() {
         return numberPhone;
+    }
+
+    public int getLoai() {
+        return loai;
+    }
+
+    public void setLoai(int loai) {
+        this.loai = loai;
     }
 
     public void setNumberPhone(String numberPhone) {

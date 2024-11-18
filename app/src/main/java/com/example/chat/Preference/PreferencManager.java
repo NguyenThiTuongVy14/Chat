@@ -51,6 +51,7 @@ public class PreferencManager {
         }
     }
 
+
     public void clear(){
         SharedPreferences.Editor editor = share.edit();
         editor.clear();

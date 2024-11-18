@@ -3,14 +3,17 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="horizontal">
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="match_parent"
+    <ImageView
+        android:id="@+id/imgItemUser"
+        android:layout_width="60dp"
+        android:layout_height="60dp"
         android:background="@color/black"
         android:text="Image"
-        android:layout_weight=".1">
-    </TextView>
+        >
+    </ImageView>
     <TextView
+        android:layout_marginLeft="10dp"
+        android:id="@+id/infoItemUser"
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
         android:text="Ten "
@@ -18,10 +21,12 @@
 
     </TextView>
     <Button
-        android:layout_width="wrap_content"
-        android:layout_height="match_parent"
+        android:id="@+id/btnItemUser"
+        android:layout_width="130dp"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
         android:text="Add "
-        android:layout_weight=".09">
+        >
 
     </Button>
 </LinearLayout>
