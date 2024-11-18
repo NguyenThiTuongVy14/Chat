@@ -73,6 +73,25 @@
             android:maxLength="1"
             android:background="@drawable/otp_edit_text_background"
             android:layout_marginStart="8dp"/>
+        <EditText
+            android:id="@+id/code_digit_5"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:gravity="center"
+            android:inputType="number"
+            android:maxLength="1"
+            android:background="@drawable/otp_edit_text_background"
+            android:layout_marginStart="8dp"/>
+
+        <EditText
+            android:id="@+id/code_digit_6"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:gravity="center"
+            android:inputType="number"
+            android:maxLength="1"
+            android:background="@drawable/otp_edit_text_background"
+            android:layout_marginStart="8dp"/>
     </LinearLayout>
 
     <TextView

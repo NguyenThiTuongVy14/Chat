@@ -16,6 +16,7 @@ import com.google.firebase.firestore.FirebaseFirestore;
 public class Login extends AppCompatActivity {
     ActivityLoginBinding binding;
     PreferencManager preferencManager;
+    DocumentSnapshot doc;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -30,6 +31,7 @@ public class Login extends AppCompatActivity {
         setListens();
         
     }
+
     private void login(){
         FirebaseFirestore db= FirebaseFirestore.getInstance();
         db.collection(KeyWord.KEY_COLECTION_USER)
@@ -37,11 +39,12 @@ public class Login extends AppCompatActivity {
                 .whereEqualTo(KeyWord.KEY_PASS, binding.txtPassSI.getText().toString())
                 .get().addOnCompleteListener(task -> {
                     if(task.isSuccessful()&&task.getResult()!=null && task.getResult().getDocuments().size()>0){
-                        DocumentSnapshot doc =task.getResult().getDocuments().get(0);
+                        doc =task.getResult().getDocuments().get(0);
                         preferencManager.putBool(KeyWord.KEY_IS_LOGIN,true);
                         preferencManager.putString(KeyWord.KEY_USERID, doc.getId());
                         preferencManager.putString(KeyWord.KEY_PHONE,doc.getString(KeyWord.KEY_PHONE));
                         startMainActivity();
+
                     }
                     else if (task.getResult().getDocuments().size()<=0)
                         showToast("Number Phone or Password is incorrect");
@@ -53,7 +56,11 @@ public class Login extends AppCompatActivity {
 
     }
     private void startMainActivity(){
-        Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+        Intent intent = new Intent(getApplicationContext(),UserProfileActivity.class);
+        if(doc.getBoolean(KeyWord.KEY_IS_SET_PROFILE)){
+            intent = new Intent(getApplicationContext(), ListActivity.class);
+        }
+
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
         startActivity(intent);
     }

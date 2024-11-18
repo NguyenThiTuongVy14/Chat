@@ -61,7 +61,6 @@ dependencies {
 
     implementation ("com.google.firebase:firebase-firestore:25.1.1")
     implementation(platform("com.google.firebase:firebase-bom:33.5.1"))
-
 //Xác thực otp
     implementation ("com.google.firebase:firebase-auth:21.0.1")
 
@@ -69,8 +68,10 @@ dependencies {
 
     implementation ("com.squareup.retrofit2:retrofit:2.9.0")
     implementation ("com.squareup.retrofit2:converter-gson:2.9.0")
-
+    implementation ("com.google.firebase:firebase-storage:21.0.1")
     implementation ("com.google.firebase:firebase-database:20.2.0")
     implementation ("com.google.firebase:firebase-auth:22.1.1")  
     implementation ("com.google.firebase:firebase-core:21.1.1")
+    implementation ("com.google.android.gms:play-services-tasks:18.0.2")
+    implementation ("com.github.bumptech.glide:glide:4.14.2")
 }
