@@ -29,27 +29,7 @@ public class PreferencManager {
     public  String getString(String key){
         return share.getString(key,null);
     }
-    public void saveToSharedPreferences(Context context) {
-        SharedPreferences sharedPreferences = context.getSharedPreferences("AuthServicePrefs", Context.MODE_PRIVATE);
-        SharedPreferences.Editor editor = sharedPreferences.edit();
 
-        Gson gson = new Gson();
-        String json = gson.toJson(this);  // Chuyển đổi đối tượng AuthService thành JSON
-
-        editor.putString("authService", json);  // Lưu JSON vào SharedPreferences
-        editor.apply();
-    }
-    public static AuthService restoreFromSharedPreferences(Context context, AuthService.AuthCallback callback) {
-        SharedPreferences sharedPreferences = context.getSharedPreferences("AuthServicePrefs", Context.MODE_PRIVATE);
-        String json = sharedPreferences.getString("authService", null);
-
-        if (json != null) {
-            Gson gson = new Gson();
-            return gson.fromJson(json, AuthService.class);  // Chuyển JSON thành đối tượng AuthService
-        } else {
-            return new AuthService(callback);  // Nếu không có dữ liệu, tạo đối tượng AuthService mới
-        }
-    }
 
 
     public void clear(){
