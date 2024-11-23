@@ -4,6 +4,8 @@
     android:orientation="vertical">
 
 
+
+
     <FrameLayout
         android:id="@+id/container"
         android:layout_width="match_parent"
@@ -17,22 +19,31 @@
         android:gravity="center">
 
         <Button
+            android:layout_weight="1"
             android:id="@+id/button1"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Friend" />
+            android:text="Friend"
+            android:background="@drawable/btn"/>
 
         <Button
+            android:layout_marginLeft="1dp"
+            android:layout_marginRight="1dp"
             android:id="@+id/button2"
-            android:layout_width="wrap_content"
+            android:layout_weight="1"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Message" />
+            android:text="Message"
+            android:background="@drawable/btn"/>
 
         <Button
             android:id="@+id/button3"
-            android:layout_width="wrap_content"
+            android:layout_weight="1"
+
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Profile" />
+            android:text="Profile"
+            android:background="@drawable/btn"/>
     </LinearLayout>
 
 </LinearLayout>

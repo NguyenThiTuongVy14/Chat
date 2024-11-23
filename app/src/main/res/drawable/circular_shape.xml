@@ -1,5 +1,5 @@
 <!-- res/drawable/circular_shape.xml -->
 <shape xmlns:android="http://schemas.android.com/apk/res/android">
-    <solid android:color="#A09C9C"/>
-    <corners android:radius="300dp"/>
+    <solid android:color="#A09C9C"/> <!-- Màu nền trắng -->
+    <corners android:radius="300dp"/> <!-- Đặt bán kính góc để tạo hình tròn -->
 </shape>

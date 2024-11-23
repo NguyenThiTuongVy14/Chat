@@ -13,6 +13,8 @@ import com.example.chat.databinding.ActivityLoginBinding;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 
+import java.security.Key;
+
 public class Login extends AppCompatActivity {
     ActivityLoginBinding binding;
     PreferencManager preferencManager;
@@ -43,6 +45,9 @@ public class Login extends AppCompatActivity {
                         preferencManager.putBool(KeyWord.KEY_IS_LOGIN,true);
                         preferencManager.putString(KeyWord.KEY_USERID, doc.getId());
                         preferencManager.putString(KeyWord.KEY_PHONE,doc.getString(KeyWord.KEY_PHONE));
+                        preferencManager.putString(KeyWord.KEY_FULL_NAME, doc.getString(KeyWord.KEY_FULL_NAME));
+                        preferencManager.putString("image", doc.getString("image"));
+                        preferencManager.putBool(KeyWord.KEY_IS_SET_PROFILE,doc.getBoolean(KeyWord.KEY_IS_SET_PROFILE));
                         startMainActivity();
 
                     }
@@ -57,7 +62,7 @@ public class Login extends AppCompatActivity {
     }
     private void startMainActivity(){
         Intent intent = new Intent(getApplicationContext(),UserProfileActivity.class);
-        if(doc.getBoolean(KeyWord.KEY_IS_SET_PROFILE)){
+        if(preferencManager.getBool(KeyWord.KEY_IS_SET_PROFILE)){
             intent = new Intent(getApplicationContext(), ListActivity.class);
         }
 

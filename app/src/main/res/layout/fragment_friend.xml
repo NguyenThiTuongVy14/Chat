@@ -1,83 +1,115 @@
-<?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".Fragment.Friend_Fragment">
+    android:orientation="vertical"
+    android:padding="16dp"
+    android:background="@drawable/bg_friend">
 
-    <!-- Layout chính chứa phần tìm kiếm và kết quả -->
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical"
-        android:padding="16dp">
 
-        <!-- Phần nhập số điện thoại tìm kiếm -->
-        <LinearLayout
+        <EditText
+            android:id="@+id/search_edit_text"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:layout_marginBottom="16dp">
+            android:hint="Enter Phone Number"
+            android:padding="10dp"
+            android:textColor="@color/white"
+            android:textColorHint="@android:color/darker_gray"
+            android:background="@drawable/btn_background"
+            android:textSize="16sp">
 
-            <!-- EditText nhập số điện thoại -->
-            <EditText
-                android:id="@+id/search_edit_text"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:hint="Nhập số điện thoại"
-                android:inputType="phone"
-                android:padding="12dp"
-                android:textSize="16sp" />
+        </EditText>
 
-            <!-- Nút Search (Nếu cần) -->
-            <Button
-                android:id="@+id/search_button"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Search" /> <!-- Nếu không cần, có thể ẩn nút này -->
 
-        </LinearLayout>
-
-        <!-- LinearLayout hiển thị kết quả tìm kiếm -->
         <LinearLayout
             android:id="@+id/search_result_layout"
+            android:layout_marginTop="16dp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
-            android:layout_marginTop="16dp"
+            android:gravity="center_vertical"
+            android:background="#817474">
 
-           >
+                <ImageView
+                    android:id="@+id/imageSearchUser"
+                    android:layout_width="60dp"
+                    android:layout_height="60dp"
+                    android:layout_marginEnd="10dp"
+                    android:background="#999898"
+                    android:src="@drawable/img"/>
 
-            <!-- Tên người dùng tìm được -->
-            <TextView
-                android:id="@+id/result_name"
-                android:gravity="center"
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:text="Tên người dùng"
-                android:textSize="16sp"
-                android:layout_marginEnd="8dp"/>
+                <TextView
+                    android:id="@+id/result_name"
+                    android:layout_width="0dp"
+                    android:layout_weight="0.85"
+                    android:layout_height="wrap_content"
+                    android:text="User Info"
+                    android:textSize="15sp"
+                    android:textColor="@android:color/white"
+                    android:ellipsize="end"
+                    android:maxLines="2"/>
 
-            <!-- Nút Add Friend -->
-            <Button
-                android:id="@+id/add_friend_button"
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:layout_gravity="right"
-                android:text="Add Friend"/>
+                <Button
+                    android:layout_marginRight="5dp"
+                    android:id="@+id/add_friend_button"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Add"
+                    android:layout_gravity="center"
+                    android:background="@drawable/gradient_background"
+                    android:padding="8dp"/>
         </LinearLayout>
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="List Friend"
-            android:textSize="20dp"
-            android:textStyle="bold"/>
+
+        <!-- Tabs for Friend, Requests, Invitation -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:orientation="horizontal"
+            android:layout_marginTop="20dp"
+            android:background="@android:color/darker_gray">
+
+                <TextView
+                    android:id="@+id/tvlistFriend"
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:layout_height="match_parent"
+                    android:gravity="center"
+                    android:text="Friend"
+                    android:textSize="16sp"
+                    android:textColor="@android:color/white"
+                    android:background="?android:attr/selectableItemBackground" />
+
+                <TextView
+                    android:id="@+id/tvlistReq"
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:layout_height="match_parent"
+                    android:gravity="center"
+                    android:text="Requests"
+                    android:textSize="16sp"
+                    android:textColor="@android:color/white"
+                    android:background="?android:attr/selectableItemBackground" />
+
+                <TextView
+                    android:id="@+id/tvlistInvatition"
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:layout_height="match_parent"
+                    android:gravity="center"
+                    android:text="Invitation"
+                    android:textSize="16sp"
+                    android:textColor="@android:color/white"
+                    android:background="?android:attr/selectableItemBackground" />
+        </LinearLayout>
+
+        <!-- Friend List Section -->
         <ListView
             android:id="@+id/lvFriend"
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:layout_marginTop="16dp"
-            android:layout_weight="1" />
-    </LinearLayout>
-</FrameLayout>
+            android:layout_marginTop="20dp"
+            android:layout_weight="1"
+            android:divider="@android:color/darker_gray"
+            android:dividerHeight="1dp"
+            android:padding="10dp"/>
+
+</LinearLayout>

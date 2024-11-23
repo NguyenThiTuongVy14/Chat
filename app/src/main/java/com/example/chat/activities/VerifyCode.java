@@ -72,18 +72,16 @@ public class VerifyCode extends AppCompatActivity implements AuthService.AuthCal
             number="+84"+number.substring(1);
         return number;
     }
-    // Hàm thiết lập các TextWatcher để di chuyển qua các ô nhập OTP tự động
     private void setUpOTPInputListeners() {
-        codeDigit1.addTextChangedListener(new OTPTextWatcher(codeDigit1, codeDigit2));
-        codeDigit2.addTextChangedListener(new OTPTextWatcher(codeDigit2, codeDigit3));
-        codeDigit3.addTextChangedListener(new OTPTextWatcher(codeDigit3, codeDigit4));
-        codeDigit4.addTextChangedListener(new OTPTextWatcher(codeDigit4, codeDigit5));
-        codeDigit5.addTextChangedListener(new OTPTextWatcher(codeDigit5, codeDigit6));
-        codeDigit6.addTextChangedListener(new OTPTextWatcher(codeDigit6, null));
+        codeDigit1.addTextChangedListener(new OTPTextWatcher(codeDigit6,codeDigit1, codeDigit2));
+        codeDigit2.addTextChangedListener(new OTPTextWatcher(codeDigit1,codeDigit2, codeDigit3));
+        codeDigit3.addTextChangedListener(new OTPTextWatcher(codeDigit2,codeDigit3, codeDigit4));
+        codeDigit4.addTextChangedListener(new OTPTextWatcher(codeDigit3,codeDigit4, codeDigit5));
+        codeDigit5.addTextChangedListener(new OTPTextWatcher(codeDigit4,codeDigit5, codeDigit6));
+        codeDigit6.addTextChangedListener(new OTPTextWatcher(codeDigit5,codeDigit6, codeDigit1));
 
     }
 
-    // Hàm này hiển thị thông báo Toast
     private void showToast(String message) {
         Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
     }
@@ -119,7 +117,7 @@ public class VerifyCode extends AppCompatActivity implements AuthService.AuthCal
                         user.put(KEY_PHONE, phone);
                         user.put(KEY_PASS, password);
                         user.put(KEY_FULL_NAME,"");
-
+                        user.put("image","");
                         user.put(KEY_IS_SET_PROFILE,false);
                         db.collection(KEY_COLECTION_USER).add(user)
                                 .addOnSuccessListener(documentReference -> {
@@ -139,21 +137,41 @@ public class VerifyCode extends AppCompatActivity implements AuthService.AuthCal
 
 
     private static class OTPTextWatcher implements android.text.TextWatcher {
-        private final EditText currentEditText, nextEditText;
+        private final EditText preEditText,currentEditText, nextEditText;
 
-        public OTPTextWatcher(EditText currentEditText, EditText nextEditText) {
+        public OTPTextWatcher(EditText preEditText, EditText currentEditText, EditText nextEditText) {
             this.currentEditText = currentEditText;
             this.nextEditText = nextEditText;
+            this.preEditText = preEditText;
+            currentEditText.setOnKeyListener((v, keyCode, event) -> {
+                if (event.getAction() == android.view.KeyEvent.ACTION_DOWN && keyCode == android.view.KeyEvent.KEYCODE_DEL) {
+                    if (currentEditText.getText().length() == 0) {
+                        if (currentEditText.hasFocus()) {
+                            currentEditText.clearFocus();
+                            if (currentEditText != null) {
+                                preEditText.requestFocus();
+                            }
+                        }
+                    }
+                }
+                return false;
+            });
         }
 
         @Override
         public void beforeTextChanged(CharSequence charSequence, int start, int count, int after) {
+
         }
 
         @Override
+
         public void onTextChanged(CharSequence charSequence, int start, int before, int count) {
-            if (currentEditText.getText().length() == 1 && nextEditText != null) {
-                nextEditText.requestFocus();
+            if (currentEditText.getText().length() == 1) {
+                if (nextEditText != null) {
+                    nextEditText.setText("");
+                    nextEditText.requestFocus();
+                }
+
             }
         }
 
