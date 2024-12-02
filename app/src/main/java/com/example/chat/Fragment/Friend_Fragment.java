@@ -1,4 +1,5 @@
 package com.example.chat.Fragment;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
@@ -10,6 +11,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
@@ -24,6 +26,8 @@ import com.example.chat.KEYWORD.KeyWord;
 import com.example.chat.Model.User;
 import com.example.chat.Preference.PreferencManager;
 import com.example.chat.R;
+import com.example.chat.activities.EditProfileActivity;
+import com.example.chat.activities.ViewProfile;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -103,26 +107,23 @@ public class Friend_Fragment extends Fragment {
         curentPhone=preferencManager.getString(KeyWord.KEY_PHONE);
         layoutResult.setVisibility(View.GONE);
         curentUserSeacrh=new User();
-        list= new ArrayList<>();
-        adt = new AdpterUser(getActivity(), R.layout.item_user, list,curentPhone,dbStore);
-        lvFriend.setAdapter(adt);
+
         loadFriend();
 
 
         tvlistReq.setOnClickListener(v -> {
-
-            loadReq();
+            if(chooseList!=2)
+                loadReq();
 
         });
         tvlistInvatition.setOnClickListener(v -> {
-
-            loadInvation();
+            if(chooseList!=3)
+                loadInvation();
 
         });
         tvListFriend.setOnClickListener(v -> {
-
-            loadFriend();
-
+            if(chooseList!=1)
+                loadFriend();
         });
 
         btnAddFriend.setOnClickListener(v -> {
@@ -134,6 +135,17 @@ public class Friend_Fragment extends Fragment {
                 adt.notifyDataSetChanged();
             }
 
+        });
+        lvFriend.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+
+                if (i >= 0 && i < adt.getCount()&&chooseList==1) {
+                    Intent intent = new Intent(getContext(), ViewProfile.class);
+                    intent.putExtra("user",list.get(i));
+                    startActivity(intent);
+                }
+            }
         });
         edtInputSearch.addTextChangedListener(new TextWatcher() {
             @Override
@@ -246,16 +258,13 @@ public class Friend_Fragment extends Fragment {
                         else{
                             User us = new User();
                             String base64Image =doc.getString("image");
-                            if (base64Image != null && !base64Image.isEmpty()) {
-                                us.setAvataImage(base64ToBitmap(base64Image));
-                            } else
-                            {
-                                us.setAvataImage(null);
-                            }
+                            us.setAvataImage(base64Image);
                             us.setLoai(loai);
                             us.setNumberPhone(phone);
                             us.setName(doc.getString(KeyWord.KEY_FULL_NAME));
+                            us.setId(doc.getId());
                             future.complete(us);
+
                         }
 
                     } else {
@@ -281,7 +290,9 @@ public class Friend_Fragment extends Fragment {
         tvlistInvatition.setTextColor(Color.YELLOW);
         tvlistReq.setTextColor(Color.WHITE);
         tvListFriend.setTextColor(Color.WHITE);
-        list.clear();
+        list= new ArrayList<>();
+        adt = new AdpterUser(getActivity(), R.layout.item_user, list);
+        lvFriend.setAdapter(adt);
         List<CompletableFuture<Void>> futures = new ArrayList<>();
         CompletableFuture<Void> task1 = CompletableFuture.runAsync(() -> {
             dbStore.collection(KeyWord.KEY_COLECTION_FRIEND)
@@ -351,7 +362,9 @@ public class Friend_Fragment extends Fragment {
         tvlistInvatition.setTextColor(Color.WHITE);
         tvListFriend.setTextColor(Color.WHITE);
         chooseList=2;
-        list.clear();
+        list= new ArrayList<>();
+        adt = new AdpterUser(getActivity(), R.layout.item_user, list);
+        lvFriend.setAdapter(adt);
         List<CompletableFuture<Void>> futures = new ArrayList<>();
         CompletableFuture<Void> task1 = CompletableFuture.runAsync(() -> {
             dbStore.collection(KeyWord.KEY_COLECTION_FRIEND)
@@ -420,7 +433,9 @@ public class Friend_Fragment extends Fragment {
         tvlistReq.setTextColor(Color.WHITE);
         tvListFriend.setTextColor(Color.YELLOW);
         chooseList=1;
-        list.clear();
+        list= new ArrayList<>();
+        adt = new AdpterUser(getActivity(), R.layout.item_user, list);
+        lvFriend.setAdapter(adt);
 
         List<CompletableFuture<Void>> futures = new ArrayList<>();
 
@@ -464,7 +479,7 @@ public class Friend_Fragment extends Fragment {
                                         getUser(phoneFriend, 1).thenAccept(user -> {
                                             if (user != null&&chooseList==1) {
                                                 list.add(user);
-                                                adt.notifyDataSetChanged();// Thêm dữ liệu vào danh sách
+                                                adt.notifyDataSetChanged();
                                             }
                                         });
                                     }
@@ -480,7 +495,6 @@ public class Friend_Fragment extends Fragment {
         CompletableFuture.allOf(futures.toArray(new CompletableFuture[0]))
                 .thenRun(() -> {
                     getActivity().runOnUiThread(() -> {
-                        adt.notifyDataSetChanged();
                     });
                 });
 }
@@ -507,7 +521,7 @@ public class Friend_Fragment extends Fragment {
 
                             if (base64Image != null && !base64Image.isEmpty()) {
                                 imgResultSearch.setImageBitmap(base64ToBitmap(base64Image));
-                                curentUserSeacrh.setAvataImage(base64ToBitmap(base64Image));
+                                curentUserSeacrh.setAvataImage(base64Image);
                             } else {
                                 imgResultSearch.setImageResource(R.drawable.img);
                                 curentUserSeacrh.setAvataImage(null);

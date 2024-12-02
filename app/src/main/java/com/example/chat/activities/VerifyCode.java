@@ -73,12 +73,12 @@ public class VerifyCode extends AppCompatActivity implements AuthService.AuthCal
         return number;
     }
     private void setUpOTPInputListeners() {
-        codeDigit1.addTextChangedListener(new OTPTextWatcher(codeDigit6,codeDigit1, codeDigit2));
+        codeDigit1.addTextChangedListener(new OTPTextWatcher(null,codeDigit1, codeDigit2));
         codeDigit2.addTextChangedListener(new OTPTextWatcher(codeDigit1,codeDigit2, codeDigit3));
         codeDigit3.addTextChangedListener(new OTPTextWatcher(codeDigit2,codeDigit3, codeDigit4));
         codeDigit4.addTextChangedListener(new OTPTextWatcher(codeDigit3,codeDigit4, codeDigit5));
         codeDigit5.addTextChangedListener(new OTPTextWatcher(codeDigit4,codeDigit5, codeDigit6));
-        codeDigit6.addTextChangedListener(new OTPTextWatcher(codeDigit5,codeDigit6, codeDigit1));
+        codeDigit6.addTextChangedListener(new OTPTextWatcher(codeDigit5,codeDigit6, null));
 
     }
 

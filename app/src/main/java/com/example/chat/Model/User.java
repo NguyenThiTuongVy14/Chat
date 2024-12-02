@@ -2,11 +2,22 @@ package com.example.chat.Model;
 
 import android.graphics.Bitmap;
 
-public class User {
+import java.io.Serializable;
+
+public class User implements Serializable {
     private String numberPhone;
     private String name;
-    private Bitmap avataImage;
+    private String avataImage;
     private int loai;
+    private String id;
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
 
     public User() {
     }
@@ -27,11 +38,11 @@ public class User {
         this.numberPhone = numberPhone;
     }
 
-    public Bitmap getAvataImage() {
+    public String getAvataImage() {
         return avataImage;
     }
 
-    public void setAvataImage(Bitmap avataImage) {
+    public void setAvataImage(String avataImage) {
         this.avataImage = avataImage;
     }
 

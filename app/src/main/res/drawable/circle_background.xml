@@ -1,0 +1,7 @@
+<shape xmlns:android="http://schemas.android.com/apk/res/android">
+    <solid android:color="#FFFFFF" /> <!-- Màu nền -->
+    <size
+        android:width="130dp"
+        android:height="130dp" /> <!-- Kích thước (tùy chỉnh nếu cần) -->
+    <corners android:radius="999dp" /> <!-- Tạo góc bo tròn (999dp để đảm bảo hình tròn) -->
+</shape>

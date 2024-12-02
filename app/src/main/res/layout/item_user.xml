@@ -3,26 +3,35 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="horizontal">
-    <ImageView
-        android:id="@+id/imgItemUser"
-        android:layout_width="60dp"
-        android:layout_height="60dp"
-        android:background="@color/black"
-        android:text="Image"
-        >
-    </ImageView>
-    <TextView
-        android:layout_marginLeft="10dp"
-        android:id="@+id/infoItemUser"
+    <LinearLayout
+        android:id="@+id/itemUser"
         android:layout_width="wrap_content"
-        android:layout_height="match_parent"
-        android:text="Ten "
-        android:layout_weight="1">
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_weight=".8">
+        <ImageView
+            android:id="@+id/imgItemUser"
+            android:layout_width="60dp"
+            android:layout_height="60dp"
+            android:background="@color/black"
+            android:text="Image"
+            >
+        </ImageView>
+        <TextView
+            android:layout_marginLeft="10dp"
+            android:id="@+id/infoItemUser"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:text="Ten "
+            android:layout_weight="1">
 
-    </TextView>
+        </TextView>
+    </LinearLayout>
+
     <Button
+        android:layout_weight=".2"
         android:id="@+id/btnItemUser"
-        android:layout_width="130dp"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:text="Add "

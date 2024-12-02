@@ -1,6 +1,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical">
 
 
@@ -18,32 +19,11 @@
         android:orientation="horizontal"
         android:gravity="center">
 
-        <Button
-            android:layout_weight="1"
-            android:id="@+id/button1"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Friend"
-            android:background="@drawable/btn"/>
-
-        <Button
-            android:layout_marginLeft="1dp"
-            android:layout_marginRight="1dp"
-            android:id="@+id/button2"
-            android:layout_weight="1"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Message"
-            android:background="@drawable/btn"/>
-
-        <Button
-            android:id="@+id/button3"
-            android:layout_weight="1"
-
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Profile"
-            android:background="@drawable/btn"/>
     </LinearLayout>
+    <com.google.android.material.bottomnavigation.BottomNavigationView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:menu="@menu/bottom_nagivation"
+        android:id="@+id/bottomNav"/>
 
 </LinearLayout>

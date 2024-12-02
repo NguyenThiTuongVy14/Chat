@@ -1,5 +1,6 @@
 package com.example.chat.Fragment;
 
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
@@ -7,20 +8,30 @@ import android.os.Bundle;
 import androidx.fragment.app.Fragment;
 
 import android.util.Base64;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.ListView;
+import android.widget.PopupWindow;
 import android.widget.TextView;
 
 import com.example.chat.KEYWORD.KeyWord;
 import com.example.chat.Preference.PreferencManager;
 import com.example.chat.R;
+import com.example.chat.activities.ListActivity;
+import com.example.chat.activities.Login;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -35,12 +46,11 @@ public class Profile_Fragment extends Fragment {
     private String mParam1;
     private String mParam2;
     private FirebaseFirestore dbStore = FirebaseFirestore.getInstance();
-    private ImageView imgProfile;
+    private ImageView imgProfile,menu_ic;
     private TextView tvName;
     private PreferencManager preferencManager;
-
     public Profile_Fragment() {
-        // Required empty public constructor
+
     }
 
     public static Profile_Fragment newInstance(String param1, String param2) {
@@ -59,18 +69,23 @@ public class Profile_Fragment extends Fragment {
             mParam1 = getArguments().getString(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
+        preferencManager = new PreferencManager(getActivity());
+
+
+
+
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-
+        return getView(inflater,container);
+    }
+    private View getView(LayoutInflater inflater, ViewGroup container){
         View v = inflater.inflate(R.layout.fragment_profile, container, false);
-        imgProfile = v.findViewById(R.id.imageProfilePage);
-        tvName = v.findViewById(R.id.nameProfilePage);
-        preferencManager = new PreferencManager(getActivity());
+        imgProfile = v.findViewById(R.id.imgAVTProfile);
+        tvName = v.findViewById(R.id.tvNamePageProfile);
         getInfo();
-
         return v;
     }
 
@@ -106,7 +121,12 @@ public class Profile_Fragment extends Fragment {
             }
         });
     }
-
+    private void logout(){
+        preferencManager.clear();
+        Intent intent = new Intent(getActivity(),Login.class);
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
+        startActivity(intent);
+    }
     public Bitmap base64ToBitmap(String base64String) {
         try {
             byte[] decodedString = Base64.decode(base64String, Base64.DEFAULT);

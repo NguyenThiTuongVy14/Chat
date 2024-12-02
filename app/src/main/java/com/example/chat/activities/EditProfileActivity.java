@@ -13,21 +13,17 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.bumptech.glide.Glide;
 import com.example.chat.KEYWORD.KeyWord;
 import com.example.chat.Preference.PreferencManager;
 import com.example.chat.R;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.storage.FirebaseStorage;
-import com.google.firebase.storage.StorageReference;
-import com.google.firebase.storage.UploadTask;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.security.Key;
 import java.util.HashMap;
 
-public class UserProfileActivity extends AppCompatActivity {
+public class EditProfileActivity extends AppCompatActivity {
     private static final int PICK_IMAGE_REQUEST = 1;
     private Uri imageUri;
     EditText edtName;
@@ -44,11 +40,11 @@ public class UserProfileActivity extends AppCompatActivity {
         setContentView(R.layout.activity_user_profile);
         edtName=findViewById(R.id.editTextName);
         save=findViewById(R.id.buttonSaveProfile);
-        // Khởi tạo Firebase
         preferencManager=new PreferencManager(this);
         preferencManager.putBool(KeyWord.KEY_IS_LOGIN,true);
         storage = FirebaseStorage.getInstance();
         db = FirebaseFirestore.getInstance();
+        Intent i = getIntent();
 
         imageView = findViewById(R.id.profileImageView);
 
