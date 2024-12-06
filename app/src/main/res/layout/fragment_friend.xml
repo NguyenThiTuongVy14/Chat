@@ -21,10 +21,11 @@
 
 
         <LinearLayout
+
             android:id="@+id/search_result_layout"
-            android:layout_marginTop="16dp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
             android:orientation="horizontal"
             android:gravity="center_vertical"
             android:background="#817474">
@@ -35,29 +36,35 @@
                     android:layout_height="60dp"
                     android:layout_marginEnd="10dp"
                     android:background="#999898"
-                    android:src="@drawable/img"/>
+                    android:src="@drawable/img"
+                    android:scaleType="centerCrop"
+                  />
 
                 <TextView
                     android:id="@+id/result_name"
                     android:layout_width="0dp"
-                    android:layout_weight="0.85"
                     android:layout_height="wrap_content"
+                    android:layout_weight="0.85"
                     android:text="User Info"
                     android:textSize="15sp"
                     android:textColor="@android:color/white"
                     android:ellipsize="end"
-                    android:maxLines="2"/>
+                    android:maxLines="2"
+                    android:layout_marginEnd="8dp"
+                    android:lineSpacingExtra="2dp" />
 
+                <!-- Button: Add Friend -->
                 <Button
-                    android:layout_marginRight="5dp"
                     android:id="@+id/add_friend_button"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Add"
-                    android:layout_gravity="center"
+                    android:textColor="@android:color/white"
+                    android:textSize="14sp"
                     android:background="@drawable/gradient_background"
-                    android:padding="8dp"/>
+                    android:padding="8dp" />
         </LinearLayout>
+
 
         <!-- Tabs for Friend, Requests, Invitation -->
         <LinearLayout
@@ -102,7 +109,7 @@
         </LinearLayout>
 
         <!-- Friend List Section -->
-        <ListView
+        <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/lvFriend"
             android:layout_width="match_parent"
             android:layout_height="0dp"

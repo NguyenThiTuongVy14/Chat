@@ -154,7 +154,6 @@ public class ScreenChat extends AppCompatActivity {
                             Message message = document.toObject(Message.class);
                             messageAdapter.addMessage(message, 0);
                         }
-
                         lastVisible = querySnapshot.getDocuments().get(querySnapshot.size() - 1);
                     }
                     isLoading = false;

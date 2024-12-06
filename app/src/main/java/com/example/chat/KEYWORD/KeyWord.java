@@ -15,5 +15,7 @@ public class KeyWord {
 
 
 
+    public final static int TYPE_MESSAGE = 1;
+    public final static int TYPE_USER = 0;
 
 }

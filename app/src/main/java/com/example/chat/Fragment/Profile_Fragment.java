@@ -8,30 +8,19 @@ import android.os.Bundle;
 import androidx.fragment.app.Fragment;
 
 import android.util.Base64;
-import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
-import android.widget.Button;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
-import android.widget.ListView;
-import android.widget.PopupWindow;
 import android.widget.TextView;
 
 import com.example.chat.KEYWORD.KeyWord;
 import com.example.chat.Preference.PreferencManager;
 import com.example.chat.R;
-import com.example.chat.activities.ListActivity;
 import com.example.chat.activities.Login;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
-
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -48,6 +37,7 @@ public class Profile_Fragment extends Fragment {
     private FirebaseFirestore dbStore = FirebaseFirestore.getInstance();
     private ImageView imgProfile,menu_ic;
     private TextView tvName;
+    private View layout_logout;
     private PreferencManager preferencManager;
     public Profile_Fragment() {
 
@@ -85,6 +75,10 @@ public class Profile_Fragment extends Fragment {
         View v = inflater.inflate(R.layout.fragment_profile, container, false);
         imgProfile = v.findViewById(R.id.imgAVTProfile);
         tvName = v.findViewById(R.id.tvNamePageProfile);
+        layout_logout=v.findViewById(R.id.logout);
+        layout_logout.setOnClickListener(view -> {
+            logout();
+        });
         getInfo();
         return v;
     }

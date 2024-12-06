@@ -21,7 +21,11 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 import androidx.fragment.app.Fragment;
-import com.example.chat.Adapter.AdpterUser;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
+import com.example.chat.Adapter.AdapterUser;
+
 import com.example.chat.KEYWORD.KeyWord;
 import com.example.chat.Model.User;
 import com.example.chat.Preference.PreferencManager;
@@ -54,10 +58,10 @@ public class Friend_Fragment extends Fragment {
     private Button btnAddFriend;
     private EditText edtInputSearch;
     private TextView resultName,tvListFriend,tvlistReq,tvlistInvatition;
-    private ListView lvFriend;
+    private RecyclerView lvFriend;
     private PreferencManager preferencManager;
     private FirebaseFirestore dbStore;
-    private ArrayAdapter adt;
+    private AdapterUser adt;
     public static ArrayList<User> list;
 
     private String numberPhone;
@@ -110,7 +114,11 @@ public class Friend_Fragment extends Fragment {
 
         loadFriend();
 
-
+        adt.setOnItemClickListener(user -> {
+            Intent intent = new Intent(getContext(), ViewProfile.class);
+                    intent.putExtra("user",user);
+                    startActivity(intent);
+        });
         tvlistReq.setOnClickListener(v -> {
             if(chooseList!=2)
                 loadReq();
@@ -136,17 +144,17 @@ public class Friend_Fragment extends Fragment {
             }
 
         });
-        lvFriend.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-
-                if (i >= 0 && i < adt.getCount()&&chooseList==1) {
-                    Intent intent = new Intent(getContext(), ViewProfile.class);
-                    intent.putExtra("user",list.get(i));
-                    startActivity(intent);
-                }
-            }
-        });
+//        lvFriend.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+//            @Override
+//            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+//
+//                if (i >= 0 && i < adt.getCount()&&chooseList==1) {
+//                    Intent intent = new Intent(getContext(), ViewProfile.class);
+//                    intent.putExtra("user",list.get(i));
+//                    startActivity(intent);
+//                }
+//            }
+//        });
         edtInputSearch.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -185,7 +193,7 @@ public class Friend_Fragment extends Fragment {
             dbStore.collection(KeyWord.KEY_COLECTION_FRIEND)
                     .add(friend)
                     .addOnCompleteListener(command -> {
-                        btnAddFriend.setText("Cancle Requests");
+                        btnAddFriend.setText("Cancle");
 
                     })
                     .addOnFailureListener(e -> {
@@ -291,7 +299,8 @@ public class Friend_Fragment extends Fragment {
         tvlistReq.setTextColor(Color.WHITE);
         tvListFriend.setTextColor(Color.WHITE);
         list= new ArrayList<>();
-        adt = new AdpterUser(getActivity(), R.layout.item_user, list);
+        adt = new AdapterUser(list, preferencManager.getString(KeyWord.KEY_PHONE),KeyWord.TYPE_USER);
+        lvFriend.setLayoutManager(new LinearLayoutManager(getActivity()));
         lvFriend.setAdapter(adt);
         List<CompletableFuture<Void>> futures = new ArrayList<>();
         CompletableFuture<Void> task1 = CompletableFuture.runAsync(() -> {
@@ -363,7 +372,8 @@ public class Friend_Fragment extends Fragment {
         tvListFriend.setTextColor(Color.WHITE);
         chooseList=2;
         list= new ArrayList<>();
-        adt = new AdpterUser(getActivity(), R.layout.item_user, list);
+        adt = new AdapterUser(list, preferencManager.getString(KeyWord.KEY_PHONE),KeyWord.TYPE_USER);
+        lvFriend.setLayoutManager(new LinearLayoutManager(getActivity()));
         lvFriend.setAdapter(adt);
         List<CompletableFuture<Void>> futures = new ArrayList<>();
         CompletableFuture<Void> task1 = CompletableFuture.runAsync(() -> {
@@ -434,11 +444,10 @@ public class Friend_Fragment extends Fragment {
         tvListFriend.setTextColor(Color.YELLOW);
         chooseList=1;
         list= new ArrayList<>();
-        adt = new AdpterUser(getActivity(), R.layout.item_user, list);
+        adt = new AdapterUser(list, preferencManager.getString(KeyWord.KEY_PHONE),KeyWord.TYPE_USER);
+        lvFriend.setLayoutManager(new LinearLayoutManager(getActivity()));
         lvFriend.setAdapter(adt);
-
         List<CompletableFuture<Void>> futures = new ArrayList<>();
-
         CompletableFuture<Void> task1 = CompletableFuture.runAsync(() -> {
             dbStore.collection(KeyWord.KEY_COLECTION_FRIEND)
                     .whereEqualTo(KeyWord.KEY_PHONE + "user1", curentPhone)
@@ -550,7 +559,7 @@ public class Friend_Fragment extends Fragment {
                                                 String userRequests = doc2.getString("requests");
                                                 if (userRequests!=null){
                                                     if (userRequests.equals(curentPhone)) {
-                                                        btnAddFriend.setText("Cancle Requests");
+                                                        btnAddFriend.setText("Cancle");
 
                                                     } else {
                                                         btnAddFriend.setText("Accept");

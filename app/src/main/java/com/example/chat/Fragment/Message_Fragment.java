@@ -7,8 +7,17 @@ import androidx.fragment.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
 
+import com.example.chat.KEYWORD.KeyWord;
+import com.example.chat.Model.User;
+import com.example.chat.Preference.PreferencManager;
 import com.example.chat.R;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FirebaseFirestore;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -25,19 +34,15 @@ public class Message_Fragment extends Fragment {
     // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
-
+    private PreferencManager preferencManager;
+    private FirebaseFirestore db;
+    List<User> listUser;
+    ArrayAdapter<User> adtUser;
     public Message_Fragment() {
         // Required empty public constructor
     }
 
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
-     * @return A new instance of fragment Fragment2.
-     */
+
     // TODO: Rename and change types and number of parameters
     public static Message_Fragment newInstance(String param1, String param2) {
         Message_Fragment fragment = new Message_Fragment();
@@ -55,12 +60,49 @@ public class Message_Fragment extends Fragment {
             mParam1 = getArguments().getString(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
+        preferencManager = new PreferencManager(getActivity());
+        db= FirebaseFirestore.getInstance();
+        listUser= new ArrayList<>();
+
+
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_chat, container, false);
+        View view = inflater.inflate(R.layout.message, container, false);
+
+
+        return view;
     }
+
+
+    private void loadUserChat(){
+        db.collection("message")
+                .get()
+                .addOnCompleteListener(task -> {
+                    if(task.isSuccessful()&&task.getResult()!=null){
+                        List<DocumentSnapshot> docs= task.getResult().getDocuments();
+                        for (DocumentSnapshot doc: docs) {
+                            String idDocument=doc.getId();
+                            String idUser=idDocument
+                                    .replace(preferencManager.getString(KeyWord.KEY_USERID),"");
+
+
+                        }
+                    }
+                });
+
+    }
+
+    private void getUserbyIduser(String idUser){
+        User us = new User();
+        db.collection(KeyWord.KEY_COLECTION_USER)
+                .document(idUser)
+                .get()
+                .addOnCompleteListener(task -> {
+
+                });
+    }
+
 }

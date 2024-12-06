@@ -1,41 +1,44 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:orientation="horizontal">
-    <LinearLayout
-        android:id="@+id/itemUser"
-        android:layout_width="wrap_content"
+    android:id="@+id/mainUser"
+    >
+
+    <!-- ImageView -->
+    <ImageView
+        android:id="@+id/imgItemUser"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:background="@color/black"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent" />
+
+    <!-- TextView -->
+    <TextView
+        android:id="@+id/infoItemUser"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:layout_weight=".8">
-        <ImageView
-            android:id="@+id/imgItemUser"
-            android:layout_width="60dp"
-            android:layout_height="60dp"
-            android:background="@color/black"
-            android:text="Image"
-            >
-        </ImageView>
-        <TextView
-            android:layout_marginLeft="10dp"
-            android:id="@+id/infoItemUser"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:text="Ten "
-            android:layout_weight="1">
+        android:layout_marginStart="10dp"
+        android:text="Tên Người Dùng"
+        android:textSize="16sp"
+        app:layout_constraintStart_toEndOf="@id/imgItemUser"
+        app:layout_constraintTop_toTopOf="@id/imgItemUser"
+        app:layout_constraintBottom_toBottomOf="@id/imgItemUser"
+        app:layout_constraintEnd_toStartOf="@id/btnItemUser"
+        app:layout_constraintHorizontal_bias="0" />
 
-        </TextView>
-    </LinearLayout>
-
+    <!-- Button -->
     <Button
-        android:layout_weight=".2"
         android:id="@+id/btnItemUser"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:text="Add "
-        >
+        android:text="Add"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@id/imgItemUser"
+        app:layout_constraintBottom_toBottomOf="@id/imgItemUser" />
 
-    </Button>
-</LinearLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>
