@@ -54,7 +54,7 @@ public class ViewProfile extends AppCompatActivity {
         back_ic=findViewById(R.id.backIc);
 
         Intent intent = getIntent();
-        user= (User) intent.getSerializableExtra("user");
+        user= intent.getParcelableExtra("user");
         if (user!=null){
             tvname1.setText(user.getName());
             tvname2.setText(user.getName());

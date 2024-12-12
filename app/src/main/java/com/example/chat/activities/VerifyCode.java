@@ -2,6 +2,7 @@ package com.example.chat.activities;
 
 
 import static com.example.chat.KEYWORD.KeyWord.KEY_COLECTION_USER;
+import static com.example.chat.KEYWORD.KeyWord.KEY_FMC_TOKEN;
 import static com.example.chat.KEYWORD.KeyWord.KEY_FULL_NAME;
 import static com.example.chat.KEYWORD.KeyWord.KEY_IS_SET_PROFILE;
 import static com.example.chat.KEYWORD.KeyWord.KEY_PASS;
@@ -119,6 +120,7 @@ public class VerifyCode extends AppCompatActivity implements AuthService.AuthCal
                         user.put(KEY_FULL_NAME,"");
                         user.put("image","");
                         user.put(KEY_IS_SET_PROFILE,false);
+                        user.put(KEY_FMC_TOKEN,"");
                         db.collection(KEY_COLECTION_USER).add(user)
                                 .addOnSuccessListener(documentReference -> {
                                     showToast("Sign Up is Successful");

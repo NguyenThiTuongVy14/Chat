@@ -23,6 +23,7 @@ import com.example.chat.Model.Message;
 import com.example.chat.Model.User;
 import com.example.chat.Preference.PreferencManager;
 import com.example.chat.R;
+import com.example.chat.firebase.NotificationSender;
 import com.google.firebase.Timestamp;
 import com.google.firebase.firestore.DocumentChange;
 import com.google.firebase.firestore.DocumentReference;
@@ -36,6 +37,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 
@@ -53,7 +55,7 @@ public class ScreenChat extends AppCompatActivity {
     PreferencManager preferencManager;
     private boolean isLoading=false;
     private boolean isFirstLoadComplete = false; // Flag for first load completion
-
+    private String fullName;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -72,12 +74,12 @@ public class ScreenChat extends AppCompatActivity {
         recyclerView = findViewById(R.id.recyclerView);
         progressBar=findViewById(R.id.processbar);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
-        User us = (User)getIntent().getSerializableExtra("us");
+        User us = getIntent().getParcelableExtra("us");
         if (us!=null){
             tvName.setText(us.getName());
             idSender=preferencManager.getString(KeyWord.KEY_USERID);
             idReciver=us.getId();
-
+            fullName=us.getName();
             messageAdapter = new MessageAdapter(new ArrayList<>(),idSender,
                     ImageProcessing.base64ToBitmap(us.getAvataImage()),
                     ImageProcessing.base64ToBitmap(preferencManager.getString("image")));
@@ -100,7 +102,6 @@ public class ScreenChat extends AppCompatActivity {
                 super.onScrolled(recyclerView, dx, dy);
                 if (isFirstLoadComplete && !recyclerView.canScrollVertically(-1) && !isLoading) {
                     loadMore();
-                    Toast.makeText(ScreenChat.this, "Loading more", Toast.LENGTH_SHORT).show();  // Show loading toast
                 }
             }
         });
@@ -129,6 +130,12 @@ public class ScreenChat extends AppCompatActivity {
                 .collection("chat")
                 .add(message)
                 .addOnSuccessListener(documentReference -> {
+                    HashMap<String, Object> newMess=new HashMap<>();
+                    newMess.put("newMess",message.getMessage());
+                    newMess.put("time",message.getTimestamp());
+                    db.collection(KeyWord.KEY_COLECTION_MESSAGE)
+                            .document(chatRoomId)
+                            .set(newMess);
 
                 })
                 .addOnFailureListener(e -> {
@@ -196,7 +203,7 @@ public class ScreenChat extends AppCompatActivity {
                     if (querySnapshot != null && !querySnapshot.isEmpty()) {
                         for (DocumentSnapshot document : querySnapshot.getDocuments()) {
                             Message message = document.toObject(Message.class);
-                            messageAdapter.addMessage(message, 0); // Thêm tin nhắn vào đầu
+                            messageAdapter.addMessage(message, 0);
                         }
                         lastVisible = querySnapshot.getDocuments().get(querySnapshot.size() - 1);
                     }
@@ -229,6 +236,8 @@ public class ScreenChat extends AppCompatActivity {
                                     case ADDED:
                                         int pos = messageAdapter.getItemCount();
                                         messageAdapter.addMessage(message, pos);
+                                        NotificationSender.sendNotification(this,preferencManager.getString(KeyWord.KEY_FMC_TOKEN),"New Message",fullName+": "+message.getMessage(),null);
+
                                         recyclerView.smoothScrollToPosition(pos);
                                         break;
                                     case MODIFIED:

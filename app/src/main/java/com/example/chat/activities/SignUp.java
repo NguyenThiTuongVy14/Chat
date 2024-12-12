@@ -66,7 +66,7 @@ public class SignUp extends AppCompatActivity{
         }
         else if (binding.txtPassSU.getText().toString().trim().isEmpty())
         {
-            binding.txtEmailSU.setError("Enter Password");
+            binding.txtPassSU.setError("Enter Password");
             return false;
         }
         else

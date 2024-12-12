@@ -47,6 +47,7 @@ dependencies {
     implementation(libs.firebase.storage)
     implementation(libs.firebase.firestore)
     implementation(libs.firebase.messaging)
+    implementation(libs.firebase.inappmessaging.display)
     testImplementation(libs.junit)
     androidTestImplementation(libs.ext.junit)
     androidTestImplementation(libs.espresso.core)
@@ -54,6 +55,7 @@ dependencies {
     implementation ("com.intuit.sdp:sdp-android:1.1.1")
     implementation ("com.intuit.ssp:ssp-android:1.1.1")
     implementation ("com.makeramen:roundedimageview:2.3.0")
+    implementation ("com.android.volley:volley:1.2.1")
 
 
 
@@ -61,7 +63,6 @@ dependencies {
 
     implementation ("com.google.firebase:firebase-firestore:25.1.1")
     implementation(platform("com.google.firebase:firebase-bom:33.5.1"))
-//    implementation ("com.google.firebase:firebase-auth:21.0.1")
 
 
 
@@ -74,5 +75,6 @@ dependencies {
     implementation ("com.google.android.gms:play-services-tasks:18.0.2")
     implementation ("com.github.bumptech.glide:glide:4.14.2")
     implementation ("com.google.firebase:firebase-firestore:24.3.0")
-
+    implementation ("com.google.firebase:firebase-inappmessaging-display:21.0.1")
+    implementation ("com.google.firebase:firebase-messaging:24.1.0")
 }

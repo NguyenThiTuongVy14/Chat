@@ -2,6 +2,7 @@ package com.example.chat.activities;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
 
@@ -10,19 +11,27 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.example.chat.KEYWORD.KeyWord;
 import com.example.chat.Preference.PreferencManager;
 import com.example.chat.databinding.ActivityLoginBinding;
+import com.example.chat.firebase.NotificationSender;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.messaging.FirebaseMessaging;
+
+import java.security.Key;
+import java.util.HashMap;
 
 public class Login extends AppCompatActivity {
     ActivityLoginBinding binding;
     PreferencManager preferencManager;
     DocumentSnapshot doc;
+    FirebaseFirestore db;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        db = FirebaseFirestore.getInstance();
         preferencManager = new PreferencManager(getApplicationContext());
 //        preferencManager.clear();
         if(preferencManager.getBool(KeyWord.KEY_IS_LOGIN)){
+
             startMainActivity();
 
         }
@@ -33,7 +42,7 @@ public class Login extends AppCompatActivity {
     }
 
     private void login(){
-        FirebaseFirestore db= FirebaseFirestore.getInstance();
+
         db.collection(KeyWord.KEY_COLECTION_USER)
                 .whereEqualTo(KeyWord.KEY_PHONE, binding.txtEmailSI.getText().toString())
                 .whereEqualTo(KeyWord.KEY_PASS, binding.txtPassSI.getText().toString())
@@ -46,7 +55,8 @@ public class Login extends AppCompatActivity {
                         preferencManager.putString(KeyWord.KEY_FULL_NAME, doc.getString(KeyWord.KEY_FULL_NAME));
                         preferencManager.putString("image", doc.getString("image"));
                         preferencManager.putBool(KeyWord.KEY_IS_SET_PROFILE,doc.getBoolean(KeyWord.KEY_IS_SET_PROFILE));
-                        startMainActivity();
+                        getFMC_Token();
+
 
                     }
                     else if (task.getResult().getDocuments().size()<=0)
@@ -58,12 +68,21 @@ public class Login extends AppCompatActivity {
                 });
 
     }
+    private void getFMC_Token(){
+        FirebaseMessaging.getInstance().getToken()
+                .addOnCompleteListener(task -> {
+                    if (task.isSuccessful()) {
+
+                        startMainActivity();
+                    }
+
+                });
+    }
     private void startMainActivity(){
         Intent intent = new Intent(getApplicationContext(), EditProfileActivity.class);
         if(preferencManager.getBool(KeyWord.KEY_IS_SET_PROFILE)){
             intent = new Intent(getApplicationContext(), ListActivity.class);
         }
-
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
         startActivity(intent);
     }

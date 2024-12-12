@@ -16,17 +16,22 @@ import androidx.annotation.NonNull;
 import androidx.constraintlayout.widget.ConstraintSet;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.chat.ImageProcessing;
 import com.example.chat.KEYWORD.KeyWord;
 import com.example.chat.Model.Message;
 import com.example.chat.Model.User;
 import com.example.chat.R;
+import com.google.firebase.Timestamp;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 
+import java.text.SimpleDateFormat;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 
 public class AdapterUser extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     private List<User> userList;
@@ -98,12 +103,54 @@ public class AdapterUser extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
             });
 
         }
+        if (holder instanceof UesrMessageViewHolder){
+            ((UesrMessageViewHolder)holder).name.setText(user.getName());
+            Date dateSentnewMess=user.getNewMess().getTimestamp().toDate();
+            long milisec= new Date().getTime() - dateSentnewMess.getTime();
 
+            ((UesrMessageViewHolder)holder).timestampText.setText(getStringTime(milisec));
+            ((UesrMessageViewHolder)holder).newMessage.setText(user.getNewMess().getMessage());
+            Bitmap bm = ImageProcessing.base64ToBitmap(user.getAvataImage());
+            if(bm!=null){
+                ((UesrMessageViewHolder)holder).imgUser.setImageBitmap(bm);
+            }
+            else {
+                ((UesrMessageViewHolder) holder).imgUser.setImageResource(R.drawable.img);
+            }
+            ((UesrMessageViewHolder)holder).main.setOnClickListener(view -> {
+                if (listener != null) {
+                    listener.onItemClick(user);
+                }
+            });
+        }
 
 
     }
+    private String getStringTime(long milisec){
+        String timestamp="";
+        long s = milisec/1000;
+        if(s<60){
+            timestamp=s+ " sec ago";
+        } else
+        {
+            long m= s/60;
+            if(m<60){
+                timestamp=m+" minute ago";
+            }
+            else{
+                long h = m/60;
+                if(h<24){
+                    timestamp=m+" hour ago";
+                }
+                else{
+                    long day = h/24;
+                    timestamp=day+ " day ago";
+                }
+            }
 
-
+        }
+        return timestamp;
+    }
 
     public void setOnItemClickListener(OnItemClickListener listener) {
         this.listener = listener;
@@ -111,6 +158,10 @@ public class AdapterUser extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     @Override
     public int getItemCount() {
         return userList.size();
+    }
+    public  void addUser(User us){
+        userList.add(us);
+        notifyItemInserted(getItemCount()-1);
     }
 
     private Bitmap base64ToBitmap(String base64Image) {
@@ -160,10 +211,10 @@ public class AdapterUser extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     }
 
     public static class UserViewHolder extends RecyclerView.ViewHolder {
-        ImageView img;
-        TextView tvInfo;
-        Button btn;
-        View main;
+        public ImageView img;
+        public TextView tvInfo;
+        public Button btn;
+        public View main;
 
         public UserViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -179,12 +230,14 @@ public class AdapterUser extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
         public TextView timestampText;
         public ImageView imgUser;
         public TextView name;
+        public View main;
         public UesrMessageViewHolder(View view) {
             super(view);
             name =view.findViewById(R.id.tv_user_name);
             newMessage = view.findViewById(R.id.tv_last_message);
             timestampText = view.findViewById(R.id.tv_last_active);
             imgUser= view.findViewById(R.id.img_user_avatar);
+            main = view.findViewById(R.id.main);
         }
     }
 }

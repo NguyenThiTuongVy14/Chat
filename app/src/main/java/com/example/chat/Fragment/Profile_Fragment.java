@@ -18,9 +18,11 @@ import com.example.chat.KEYWORD.KeyWord;
 import com.example.chat.Preference.PreferencManager;
 import com.example.chat.R;
 import com.example.chat.activities.Login;
+import com.example.chat.firebase.MessageService;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.messaging.FirebaseMessaging;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -77,7 +79,7 @@ public class Profile_Fragment extends Fragment {
         tvName = v.findViewById(R.id.tvNamePageProfile);
         layout_logout=v.findViewById(R.id.logout);
         layout_logout.setOnClickListener(view -> {
-            logout();
+            deleteFMC_TOKEN();
         });
         getInfo();
         return v;
@@ -121,6 +123,14 @@ public class Profile_Fragment extends Fragment {
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
         startActivity(intent);
     }
+    private void deleteFMC_TOKEN() {
+        FirebaseMessaging.getInstance().deleteToken().addOnCompleteListener(task -> {
+            logout();
+        });
+    }
+
+
+
     public Bitmap base64ToBitmap(String base64String) {
         try {
             byte[] decodedString = Base64.decode(base64String, Base64.DEFAULT);

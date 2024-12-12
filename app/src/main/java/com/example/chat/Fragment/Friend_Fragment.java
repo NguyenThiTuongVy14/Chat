@@ -115,7 +115,7 @@ public class Friend_Fragment extends Fragment {
         loadFriend();
 
         adt.setOnItemClickListener(user -> {
-            Intent intent = new Intent(getContext(), ViewProfile.class);
+            Intent intent = new Intent(getActivity(), ViewProfile.class);
                     intent.putExtra("user",user);
                     startActivity(intent);
         });
@@ -276,7 +276,7 @@ public class Friend_Fragment extends Fragment {
                         }
 
                     } else {
-                        future.complete(null);  // Kết thúc với kết quả null nếu không tìm thấy người dùng
+                        future.complete(null);
                     }
                 });
 
@@ -318,8 +318,8 @@ public class Friend_Fragment extends Fragment {
                                     if (isFriend != null && !isFriend && req.equals(phoneFriend)) {
                                         getUser(phoneFriend, 3).thenAccept(user -> {
                                             if (user != null&&chooseList==3) {
-                                                list.add(user);
-                                                adt.notifyDataSetChanged();
+                                                adt.addUser(user);
+
                                             }
                                         });
                                     }
@@ -344,8 +344,8 @@ public class Friend_Fragment extends Fragment {
                                     if (isFriend != null && !isFriend && req.equals(phoneFriend)) {
                                         getUser(phoneFriend, 3).thenAccept(user -> {
                                             if (user != null&&chooseList==3) {
-                                                list.add(user);
-                                                adt.notifyDataSetChanged();
+                                                adt.addUser(user);
+
                                             }
                                         });
                                     }
@@ -391,8 +391,8 @@ public class Friend_Fragment extends Fragment {
                                     if (isFriend != null && !isFriend && req.equals(curentPhone)) {
                                         getUser(phoneFriend, 2).thenAccept(user -> {
                                             if (user != null&&chooseList==2) {
-                                                list.add(user);
-                                                adt.notifyDataSetChanged();
+                                                adt.addUser(user);
+
                                             }
                                         });
                                     }
@@ -417,8 +417,8 @@ public class Friend_Fragment extends Fragment {
                                     if (isFriend != null && !isFriend && req.equals(curentPhone)) {
                                         getUser(phoneFriend, 2).thenAccept(user -> {
                                             if (user != null&&chooseList==2) {
-                                                list.add(user);
-                                                adt.notifyDataSetChanged();
+                                                adt.addUser(user);
+
                                             }
                                         });
                                     }
@@ -462,8 +462,7 @@ public class Friend_Fragment extends Fragment {
                                     if (isFriend != null && isFriend) {
                                         getUser(phoneFriend,1).thenAccept(user -> {
                                             if (user != null&&chooseList==1) {
-                                                list.add(user);
-                                                adt.notifyDataSetChanged();// Thêm dữ liệu vào danh sách
+                                                adt.addUser(user);
                                             }
                                         });
                                     }
@@ -487,8 +486,8 @@ public class Friend_Fragment extends Fragment {
                                     if (isFriend != null && isFriend) {
                                         getUser(phoneFriend, 1).thenAccept(user -> {
                                             if (user != null&&chooseList==1) {
-                                                list.add(user);
-                                                adt.notifyDataSetChanged();
+                                                adt.addUser(user);
+
                                             }
                                         });
                                     }

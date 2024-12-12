@@ -1,23 +1,35 @@
 package com.example.chat.Fragment;
 
+import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.Toast;
 
+import com.example.chat.Adapter.AdapterUser;
 import com.example.chat.KEYWORD.KeyWord;
+import com.example.chat.Model.Message;
 import com.example.chat.Model.User;
 import com.example.chat.Preference.PreferencManager;
 import com.example.chat.R;
+import com.example.chat.activities.ScreenChat;
+import com.example.chat.firebase.NotificationSender;
+import com.google.firebase.Timestamp;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.Query;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -36,8 +48,9 @@ public class Message_Fragment extends Fragment {
     private String mParam2;
     private PreferencManager preferencManager;
     private FirebaseFirestore db;
-    List<User> listUser;
-    ArrayAdapter<User> adtUser;
+    private List<User> listUser;
+    private AdapterUser adtUser;
+    private RecyclerView recycleViewMessageUser;
     public Message_Fragment() {
         // Required empty public constructor
     }
@@ -62,47 +75,82 @@ public class Message_Fragment extends Fragment {
         }
         preferencManager = new PreferencManager(getActivity());
         db= FirebaseFirestore.getInstance();
-        listUser= new ArrayList<>();
-
-
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.message, container, false);
+        recycleViewMessageUser =view.findViewById(R.id.recyViewMessage);
+        recycleViewMessageUser.setLayoutManager(new LinearLayoutManager(getActivity()));
+        listUser= new ArrayList<>();
+        adtUser=new AdapterUser(listUser,preferencManager.getString(KeyWord.KEY_PHONE),1);
+        recycleViewMessageUser.setAdapter(adtUser);
+        loadUserChat();
+        adtUser.setOnItemClickListener(user -> {
 
-
+            Intent intent = new Intent(getActivity(), ScreenChat.class);
+            intent.putExtra("us",user);
+            startActivity(intent);
+        });
         return view;
     }
 
 
     private void loadUserChat(){
-        db.collection("message")
+        db.collection(KeyWord.KEY_COLECTION_MESSAGE)
+                .orderBy("time", Query.Direction.DESCENDING)
                 .get()
                 .addOnCompleteListener(task -> {
-                    if(task.isSuccessful()&&task.getResult()!=null){
-                        List<DocumentSnapshot> docs= task.getResult().getDocuments();
-                        for (DocumentSnapshot doc: docs) {
-                            String idDocument=doc.getId();
-                            String idUser=idDocument
-                                    .replace(preferencManager.getString(KeyWord.KEY_USERID),"");
-
-
+                    if (task.isSuccessful()&&task.getResult()!=null) {
+                        for (DocumentSnapshot chatRoom : task.getResult()) {
+                            String chatRoomID = chatRoom.getId();
+                            String idUser = chatRoomID.replace(preferencManager.getString(KeyWord.KEY_USERID),"");
+                            if(!idUser.equals(chatRoomID)) {
+                                getUser(idUser).thenAccept(user -> {
+                                    if (user != null) {
+                                        Message newMess = new Message();
+                                        newMess.setMessage(chatRoom.getString("newMess"));
+                                        Timestamp time = chatRoom.getTimestamp("time");
+                                        newMess.setTimestamp(time);
+                                        user.setNewMess(newMess);
+                                        adtUser.addUser(user);
+                                    }
+                                });
+                            }
                         }
+                    }
+                    else{
+                        Toast.makeText(getActivity(), "Loi", Toast.LENGTH_SHORT).show();
                     }
                 });
 
     }
 
-    private void getUserbyIduser(String idUser){
-        User us = new User();
+
+    private CompletableFuture<User> getUser(String idUser) {
+        CompletableFuture<User> future = new CompletableFuture<>();
         db.collection(KeyWord.KEY_COLECTION_USER)
                 .document(idUser)
                 .get()
                 .addOnCompleteListener(task -> {
+                    if (task.isSuccessful() && task.getResult() != null) {
+                        DocumentSnapshot doc = task.getResult();
+                        User us = new User();
+                        String base64Image = doc.getString("image");
+                        if (base64Image == null) base64Image = null;
+                        us.setAvataImage(base64Image);
+                        us.setNumberPhone(doc.getString(KeyWord.KEY_PHONE));
+                        us.setName(doc.getString(KeyWord.KEY_FULL_NAME));
+                        us.setId(doc.getId());
+                        future.complete(us);
+                    } else {
+                        future.completeExceptionally(new Exception("Failed to get user data"));
+                    }
+                })
+                .addOnFailureListener(e -> future.completeExceptionally(e));
 
-                });
+        return future;
     }
 
 }
