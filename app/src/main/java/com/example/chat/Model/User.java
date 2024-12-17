@@ -23,6 +23,7 @@ public class User implements Parcelable {
         loai = in.readInt();
         newMess = in.readParcelable(Message.class.getClassLoader());  // Assuming Message implements Parcelable
         id = in.readString();
+        fmc_token=in.readString();
     }
 
     @Override
@@ -33,6 +34,7 @@ public class User implements Parcelable {
         dest.writeInt(loai);
         dest.writeParcelable(newMess, flags);  // Assuming Message implements Parcelable
         dest.writeString(id);
+        dest.writeString(fmc_token);
     }
 
     @Override

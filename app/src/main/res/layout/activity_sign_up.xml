@@ -46,7 +46,7 @@
             android:layout_height="@dimen/_45sdp"
             android:layout_marginTop="@dimen/_45sdp"
             android:background="@drawable/input_background"
-            android:hint="Email Address"
+            android:hint="Enter phone"
             android:paddingStart="@dimen/_16sdp"
             android:paddingEnd="@dimen/_16sdp"
             android:inputType="textEmailAddress"

@@ -1,15 +1,24 @@
 package com.example.chat.activities;
 
+import android.Manifest;
+import android.annotation.SuppressLint;
+import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.location.Location;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
@@ -26,76 +35,93 @@ import com.example.chat.R;
 import com.example.chat.firebase.NotificationSender;
 import com.google.firebase.Timestamp;
 import com.google.firebase.firestore.DocumentChange;
-import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
+import com.google.android.gms.location.FusedLocationProviderClient;
+import com.google.android.gms.location.LocationServices;
 
-import org.checkerframework.checker.units.qual.s;
-
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.List;
-import java.util.Locale;
 
 public class ScreenChat extends AppCompatActivity {
     private ProgressBar progressBar;
     private TextView tvName;
     private ImageButton btnsend;
+    private ImageView shareLocation;
+    private ImageButton btn_back;
     private EditText edtMessage;
     private RecyclerView recyclerView;
     private MessageAdapter messageAdapter;
     private FirebaseFirestore db;
-    private String chatRoomId=null;
+    private String chatRoomId = null;
     private String idSender;
     private String idReciver;
     PreferencManager preferencManager;
-    private boolean isLoading=false;
+    private boolean isLoading = false;
     private boolean isFirstLoadComplete = false; // Flag for first load completion
-    private String fullName;
+    private User us = null;
+
+    // Location-related fields
+    private static final int LOCATION_PERMISSION_REQUEST_CODE = 1000;
+    private FusedLocationProviderClient fusedLocationClient;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_screen_chat);
+
+        fusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
+
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
+
         db = FirebaseFirestore.getInstance();
-        preferencManager= new PreferencManager(this);
-        tvName=findViewById(R.id.tvName);
-        edtMessage= findViewById(R.id.etMessage);
-        btnsend=findViewById(R.id.btnSend);
+        preferencManager = new PreferencManager(this);
+        tvName = findViewById(R.id.tvName);
+        edtMessage = findViewById(R.id.etMessage);
+        btnsend = findViewById(R.id.btnSend);
+        btn_back = findViewById(R.id.back);
+        shareLocation = findViewById(R.id.shareLoction);
         recyclerView = findViewById(R.id.recyclerView);
-        progressBar=findViewById(R.id.processbar);
+        progressBar = findViewById(R.id.processbar);
+
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
-        User us = getIntent().getParcelableExtra("us");
-        if (us!=null){
+        us = getIntent().getParcelableExtra("us");
+
+        if (us != null) {
             tvName.setText(us.getName());
-            idSender=preferencManager.getString(KeyWord.KEY_USERID);
-            idReciver=us.getId();
-            fullName=us.getName();
-            messageAdapter = new MessageAdapter(new ArrayList<>(),idSender,
+            idSender = preferencManager.getString(KeyWord.KEY_USERID);
+            idReciver = us.getId();
+            messageAdapter = new MessageAdapter(new ArrayList<>(), idSender,
                     ImageProcessing.base64ToBitmap(us.getAvataImage()),
                     ImageProcessing.base64ToBitmap(preferencManager.getString("image")));
+
             recyclerView.setAdapter(messageAdapter);
-            messageAdapter.notifyDataSetChanged();
-            if(idSender.compareTo(idReciver)>0){
-                chatRoomId=idSender+idReciver;
+
+
+            if (idSender.compareTo(idReciver) > 0) {
+                chatRoomId = idSender + idReciver;
+            } else {
+                chatRoomId = idReciver + idSender;
             }
-            else
-                chatRoomId=idReciver+idSender;
-
-
         }
 
         listenForMessages();
         firstLoad();
+        messageAdapter.setOnItemClickListener(location -> {
+            Intent intent = new Intent(this,MapsActivity.class);
+            intent.putExtra("location",location);
+            startActivity(intent);
+
+        });
+        btn_back.setOnClickListener(v -> onBackPressed());
+
         recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
             public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
@@ -106,40 +132,85 @@ public class ScreenChat extends AppCompatActivity {
             }
         });
 
-
+        shareLocation.setOnClickListener(v -> {
+            AlertDialog.Builder  builder = new AlertDialog.Builder(this);
+            builder.setTitle("Share location");
+            builder.setMessage("Are you sure share my location with " + us.getName());
+            builder.setPositiveButton("Yes",(dialog, which) -> {
+                if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
+                        != PackageManager.PERMISSION_GRANTED) {
+                    ActivityCompat.requestPermissions(this,
+                            new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
+                            LOCATION_PERMISSION_REQUEST_CODE);
+                } else {
+                    sendLocationMessage();
+                }
+            });
+            builder.setNegativeButton("No", null);
+            builder.setCancelable(false);
+            builder.show();
+        });
         btnsend.setOnClickListener(view -> {
-            if (chatRoomId!=null&&!edtMessage.getText().toString().isEmpty()){
+            if (chatRoomId != null && !edtMessage.getText().toString().isEmpty()) {
                 Message message = new Message();
                 message.setMessage(edtMessage.getText().toString());
                 message.setId_Sender(idSender);
                 message.setId_Receive(idReciver);
+                message.setMessLocation(false);
                 message.setTimestamp(new Timestamp(new Date()));
                 sendMessage(message);
                 edtMessage.setText("");
-
             }
         });
-
     }
 
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        if (requestCode == LOCATION_PERMISSION_REQUEST_CODE) {
+            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                sendLocationMessage();
+            } else {
+                Toast.makeText(this, "Location permission is required to share location.", Toast.LENGTH_SHORT).show();
+            }
+        }
+    }
+    @SuppressLint("MissingPermission")
+    private void sendLocationMessage() {
+        fusedLocationClient.getLastLocation()
+                .addOnSuccessListener(this, location -> {
+                    if (location != null) {
+                        Message message = new Message();
+                        message.setId_Sender(idSender);
+                        message.setId_Receive(idReciver);
+                        message.setMessLocation(true);
+                        message.setLatitude(location.getLatitude());
+                        message.setLongitude(location.getLongitude());
+                        message.setTimestamp(new Timestamp(new Date()));
+                        sendMessage(message);
+                    } else {
+                        Toast.makeText(this, "Unable to get location.", Toast.LENGTH_SHORT).show();
+                    }
+                })
+                .addOnFailureListener(this, e -> Toast.makeText(this, "Error getting location.", Toast.LENGTH_SHORT).show());
+    }
 
-
-    private void sendMessage(Message message){
+    private void sendMessage(Message message) {
         db.collection(KeyWord.KEY_COLECTION_MESSAGE)
                 .document(chatRoomId)
                 .collection("chat")
                 .add(message)
                 .addOnSuccessListener(documentReference -> {
-                    HashMap<String, Object> newMess=new HashMap<>();
-                    newMess.put("newMess",message.getMessage());
-                    newMess.put("time",message.getTimestamp());
+                    HashMap<String, Object> newMess = new HashMap<>();
+                    newMess.put("newMess", message.getMessage());
+                    newMess.put("time", message.getTimestamp());
                     db.collection(KeyWord.KEY_COLECTION_MESSAGE)
                             .document(chatRoomId)
                             .set(newMess);
-
+                    NotificationSender.sendNotification(this, us.getFmc_token(), "New message", us.getName() + ": " + message.getMessage(), null);
                 })
                 .addOnFailureListener(e -> {
-
+                    Toast.makeText(this, "Failed to send message.", Toast.LENGTH_SHORT).show();
                 });
     }
 
@@ -167,24 +238,22 @@ public class ScreenChat extends AppCompatActivity {
                     isFirstLoadComplete = true;
                     setProgressBar();
                     recyclerView.scrollToPosition(messageAdapter.getItemCount() - 1);
-//                    progressBar.setVisibility(View.GONE);
-
+                    progressBar.setVisibility(View.GONE);
                 })
                 .addOnFailureListener(e -> {
                     isLoading = false;
-                    Toast.makeText(this, "Lỗi khi tải tin nhắn", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(this, "Error loading messages.", Toast.LENGTH_SHORT).show();
                 });
     }
-    private void setProgressBar(){
-        if (isLoading){
+
+    private void setProgressBar() {
+        if (isLoading) {
             progressBar.setVisibility(View.VISIBLE);
             recyclerView.setVisibility(View.INVISIBLE);
-        }
-        else{
+        } else {
             progressBar.setVisibility(View.INVISIBLE);
             recyclerView.setVisibility(View.VISIBLE);
         }
-
     }
 
     private void loadMore() {
@@ -236,8 +305,6 @@ public class ScreenChat extends AppCompatActivity {
                                     case ADDED:
                                         int pos = messageAdapter.getItemCount();
                                         messageAdapter.addMessage(message, pos);
-                                        NotificationSender.sendNotification(this,preferencManager.getString(KeyWord.KEY_FMC_TOKEN),"New Message",fullName+": "+message.getMessage(),null);
-
                                         recyclerView.smoothScrollToPosition(pos);
                                         break;
                                     case MODIFIED:
@@ -254,11 +321,4 @@ public class ScreenChat extends AppCompatActivity {
                     }
                 });
     }
-
-
 }
-
-
-
-
-

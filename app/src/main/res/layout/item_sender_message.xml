@@ -20,12 +20,12 @@
             android:id="@+id/tvMessage"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:background="#000"
+            android:background="@drawable/message_bubble_right"
             android:maxWidth="250dp"
             android:padding="10dp"
             android:layout_marginRight="10dp"
             android:text="Message"
-            android:textColor="#fff"
+            android:textColor="#000000"
             android:textSize="16sp" />
         <ImageView
             android:id="@+id/imgAvatar"

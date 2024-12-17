@@ -7,11 +7,9 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
 import android.widget.Toast;
 
 import com.example.chat.Adapter.AdapterUser;
@@ -21,7 +19,6 @@ import com.example.chat.Model.User;
 import com.example.chat.Preference.PreferencManager;
 import com.example.chat.R;
 import com.example.chat.activities.ScreenChat;
-import com.example.chat.firebase.NotificationSender;
 import com.google.firebase.Timestamp;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -77,22 +74,22 @@ public class Message_Fragment extends Fragment {
         db= FirebaseFirestore.getInstance();
     }
 
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.message, container, false);
+        View view = inflater.inflate(R.layout.fragment_message, container, false);
         recycleViewMessageUser =view.findViewById(R.id.recyViewMessage);
         recycleViewMessageUser.setLayoutManager(new LinearLayoutManager(getActivity()));
-        listUser= new ArrayList<>();
-        adtUser=new AdapterUser(listUser,preferencManager.getString(KeyWord.KEY_PHONE),1);
-        recycleViewMessageUser.setAdapter(adtUser);
-        loadUserChat();
-        adtUser.setOnItemClickListener(user -> {
-
-            Intent intent = new Intent(getActivity(), ScreenChat.class);
-            intent.putExtra("us",user);
-            startActivity(intent);
-        });
+//        listUser= new ArrayList<>();
+//        adtUser=new AdapterUser(listUser,preferencManager.getString(KeyWord.KEY_PHONE),1);
+//        recycleViewMessageUser.setAdapter(adtUser);
+//        loadUserChat();
+//        adtUser.setOnItemClickListener(user -> {
+//            Intent intent = new Intent(getActivity(), ScreenChat.class);
+//            intent.putExtra("us",user);
+//            startActivity(intent);
+//        });
         return view;
     }
 
@@ -143,6 +140,7 @@ public class Message_Fragment extends Fragment {
                         us.setNumberPhone(doc.getString(KeyWord.KEY_PHONE));
                         us.setName(doc.getString(KeyWord.KEY_FULL_NAME));
                         us.setId(doc.getId());
+                        us.setFmc_token(doc.getString(KeyWord.KEY_FMC_TOKEN));
                         future.complete(us);
                     } else {
                         future.completeExceptionally(new Exception("Failed to get user data"));
@@ -153,4 +151,17 @@ public class Message_Fragment extends Fragment {
         return future;
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+        listUser= new ArrayList<>();
+        adtUser=new AdapterUser(listUser,preferencManager.getString(KeyWord.KEY_PHONE),1);
+        recycleViewMessageUser.setAdapter(adtUser);
+        loadUserChat();
+        adtUser.setOnItemClickListener(user -> {
+            Intent intent = new Intent(getActivity(), ScreenChat.class);
+            intent.putExtra("us",user);
+            startActivity(intent);
+        });
+    }
 }

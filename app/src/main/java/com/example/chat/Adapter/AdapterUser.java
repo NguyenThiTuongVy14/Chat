@@ -39,10 +39,9 @@ public class AdapterUser extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     private int type;
     private FirebaseFirestore db;
     private OnItemClickListener listener;
-
+    private OnItemClickButtonListener listenerbutton;
 
     public AdapterUser(List<User> userList, String currentPhone, int type) {
-
         this.userList = userList;
         this.currentPhone = currentPhone;
         this.type=type;
@@ -56,6 +55,9 @@ public class AdapterUser extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     }
     public interface OnItemClickListener {
         void onItemClick(User user);
+    }
+    public interface OnItemClickButtonListener {
+        void onItemClick(String phone, String text);
     }
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
@@ -94,6 +96,11 @@ public class AdapterUser extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
                     unFriendOrUnReq(user.getNumberPhone(), position);
                 } else {
                     accept(user.getNumberPhone(), position);
+                }
+            });
+            ((UserViewHolder)holder).btn.setOnClickListener(view -> {
+                if (listener != null) {
+                    listener.onItemClick(user);
                 }
             });
             ((UserViewHolder)holder).main.setOnClickListener(view -> {
@@ -216,13 +223,13 @@ public class AdapterUser extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
         public Button btn;
         public View main;
 
+
         public UserViewHolder(@NonNull View itemView) {
             super(itemView);
             img = itemView.findViewById(R.id.imgItemUser);
             tvInfo = itemView.findViewById(R.id.infoItemUser);
             btn = itemView.findViewById(R.id.btnItemUser);
             main = itemView.findViewById(R.id.mainUser);
-
         }
     }
     public static class UesrMessageViewHolder extends RecyclerView.ViewHolder {
@@ -231,6 +238,7 @@ public class AdapterUser extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
         public ImageView imgUser;
         public TextView name;
         public View main;
+
         public UesrMessageViewHolder(View view) {
             super(view);
             name =view.findViewById(R.id.tv_user_name);
@@ -238,6 +246,7 @@ public class AdapterUser extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
             timestampText = view.findViewById(R.id.tv_last_active);
             imgUser= view.findViewById(R.id.img_user_avatar);
             main = view.findViewById(R.id.main);
+
         }
     }
 }

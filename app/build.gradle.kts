@@ -4,6 +4,7 @@ plugins {
 
     id("com.android.application")
     id("com.google.gms.google-services")
+    alias(libs.plugins.google.android.libraries.mapsplatform.secrets.gradle.plugin)
 }
 
 android {
@@ -48,6 +49,8 @@ dependencies {
     implementation(libs.firebase.firestore)
     implementation(libs.firebase.messaging)
     implementation(libs.firebase.inappmessaging.display)
+    implementation(libs.play.services.maps)
+    implementation(libs.play.services.location)
     testImplementation(libs.junit)
     androidTestImplementation(libs.ext.junit)
     androidTestImplementation(libs.espresso.core)
@@ -77,4 +80,8 @@ dependencies {
     implementation ("com.google.firebase:firebase-firestore:24.3.0")
     implementation ("com.google.firebase:firebase-inappmessaging-display:21.0.1")
     implementation ("com.google.firebase:firebase-messaging:24.1.0")
+
+    implementation ("com.google.android.gms:play-services-maps:18.0.2")
+    implementation ("com.google.android.gms:play-services-location:18.0.0")
+
 }

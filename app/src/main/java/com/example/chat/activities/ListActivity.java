@@ -1,18 +1,15 @@
 package com.example.chat.activities;
 
 import android.os.Bundle;
-import android.util.Log;
-import android.widget.Toast;
-
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentTransaction;
 
 import com.example.chat.Fragment.Friend_Fragment;
 import com.example.chat.Fragment.Message_Fragment;
 import com.example.chat.Fragment.Profile_Fragment;
 import com.example.chat.R;
 import com.example.chat.databinding.ActivityListChatBinding;
-import com.google.firebase.messaging.FirebaseMessaging;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -31,7 +28,6 @@ public class ListActivity extends AppCompatActivity {
         fragmentMap.put(R.id.message, new Message_Fragment());
         fragmentMap.put(R.id.profile, new Profile_Fragment());
 
-
         binding.bottomNav.setOnItemSelectedListener(item -> {
             Fragment selectedFragment = fragmentMap.get(item.getItemId());
             if (selectedFragment != null) {
@@ -43,6 +39,9 @@ public class ListActivity extends AppCompatActivity {
             return true;
         });
 
+        // Đặt mặc định mục "message" được chọn khi vừa vào
         binding.bottomNav.setSelectedItemId(R.id.message);
     }
+
+
 }

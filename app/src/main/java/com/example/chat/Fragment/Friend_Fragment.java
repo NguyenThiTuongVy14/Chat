@@ -26,6 +26,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.chat.Adapter.AdapterUser;
 
+import com.example.chat.ImageProcessing;
 import com.example.chat.KEYWORD.KeyWord;
 import com.example.chat.Model.User;
 import com.example.chat.Preference.PreferencManager;
@@ -119,6 +120,7 @@ public class Friend_Fragment extends Fragment {
                     intent.putExtra("user",user);
                     startActivity(intent);
         });
+
         tvlistReq.setOnClickListener(v -> {
             if(chooseList!=2)
                 loadReq();
@@ -144,17 +146,7 @@ public class Friend_Fragment extends Fragment {
             }
 
         });
-//        lvFriend.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-//            @Override
-//            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-//
-//                if (i >= 0 && i < adt.getCount()&&chooseList==1) {
-//                    Intent intent = new Intent(getContext(), ViewProfile.class);
-//                    intent.putExtra("user",list.get(i));
-//                    startActivity(intent);
-//                }
-//            }
-//        });
+
         edtInputSearch.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -194,9 +186,10 @@ public class Friend_Fragment extends Fragment {
                     .add(friend)
                     .addOnCompleteListener(command -> {
                         btnAddFriend.setText("Cancle");
+                        if(chooseList==2){
+                            list.add(curentUserSeacrh);
+                        }
 
-                    })
-                    .addOnFailureListener(e -> {
                     });
         }
         else if (textBtn.equals("Accept"))
@@ -214,9 +207,10 @@ public class Friend_Fragment extends Fragment {
                             DocumentReference docRef =doc.getReference();
                             docRef.update(friend);
                             btnAddFriend.setText("UnFriend");
-
+                            if(chooseList==3){
+                                list.remove(curentUserSeacrh);
+                            }
                         }
-
                     });
         }
         else if (textBtn.equals("UnFriend")){
@@ -231,6 +225,9 @@ public class Friend_Fragment extends Fragment {
                             DocumentReference docRef =doc.getReference();
                             docRef.delete();
                             btnAddFriend.setText("Add Friend");
+                            if(chooseList==1){
+                                list.remove(curentUserSeacrh);
+                            }
                         }
                     });
         }
@@ -246,6 +243,9 @@ public class Friend_Fragment extends Fragment {
                             DocumentReference docRef =doc.getReference();
                             docRef.delete();
                             btnAddFriend.setText("Add Friend");
+                            if(chooseList==2){
+                                list.remove(curentUserSeacrh);
+                            }
                         }
                     });
         }
@@ -319,7 +319,6 @@ public class Friend_Fragment extends Fragment {
                                         getUser(phoneFriend, 3).thenAccept(user -> {
                                             if (user != null&&chooseList==3) {
                                                 adt.addUser(user);
-
                                             }
                                         });
                                     }
@@ -509,7 +508,7 @@ public class Friend_Fragment extends Fragment {
     private void searchUser() {
         numberPhone = edtInputSearch.getText().toString();
         if (numberPhone.length() == 10) {
-            layoutResult.setVisibility(View.VISIBLE);
+
             dbStore.collection(KeyWord.KEY_COLECTION_USER)
                     .whereEqualTo(KeyWord.KEY_PHONE, numberPhone)
                     .get()
@@ -521,14 +520,14 @@ public class Friend_Fragment extends Fragment {
                             btnAddFriend.setVisibility(View.VISIBLE);
                         }
                         imgResultSearch.setVisibility(View.VISIBLE);
-                        layoutResult.setVisibility(View.VISIBLE);
+
                         if (task.isSuccessful() && task.getResult() != null && !task.getResult().isEmpty()) {
                             DocumentSnapshot doc = task.getResult().getDocuments().get(0);
                             String fullName = doc.getString(KeyWord.KEY_FULL_NAME);
                             String base64Image = doc.getString("image");
 
                             if (base64Image != null && !base64Image.isEmpty()) {
-                                imgResultSearch.setImageBitmap(base64ToBitmap(base64Image));
+                                imgResultSearch.setImageBitmap(ImageProcessing.base64ToBitmap(base64Image));
                                 curentUserSeacrh.setAvataImage(base64Image);
                             } else {
                                 imgResultSearch.setImageResource(R.drawable.img);
@@ -574,36 +573,27 @@ public class Friend_Fragment extends Fragment {
                                             }
                                         }
                                         else
-
                                             btnAddFriend.setText("Add Friend");
+                                        layoutResult.setVisibility(View.VISIBLE);
                                     });
 
                         }
                         else {
-                            imgResultSearch.setVisibility(View.GONE);
+                            layoutResult.setVisibility(View.VISIBLE);
+                            imgResultSearch.setVisibility(View.INVISIBLE);
                             resultName.setText(numberPhone +" not found");
-                            btnAddFriend.setVisibility(View.INVISIBLE);
+                            btnAddFriend.setVisibility(View.GONE);
                         }
+
                     });
         } else {
             edtInputSearch.setError("Invailed");
+            layoutResult.setVisibility(View.GONE);
+
         }
-        layoutResult.setVisibility(View.GONE);
 
     }
 
 
-    private Bitmap base64ToBitmap(String base64Image) {
-        try {
-            byte[] decodedString = Base64.decode(base64Image, Base64.DEFAULT);
-            Bitmap decodedByte = BitmapFactory.decodeByteArray(decodedString, 0, decodedString.length);
-            return decodedByte;
-        } catch (IllegalArgumentException e) {
-            e.printStackTrace();
-            return null;
-        } catch (OutOfMemoryError e) {
-            e.printStackTrace();
-            return null;
-        }
-    }
+
 }

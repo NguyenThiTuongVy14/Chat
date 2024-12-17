@@ -3,75 +3,76 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:padding="16dp"
-    android:background="@drawable/bg_friend">
+    android:background="@android:color/white">
 
-
+        <!-- Search Bar -->
         <EditText
             android:id="@+id/search_edit_text"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="Enter Phone Number"
-            android:padding="10dp"
-            android:textColor="@color/white"
+            android:padding="14dp"
+            android:textColor="@android:color/black"
             android:textColorHint="@android:color/darker_gray"
             android:background="@drawable/btn_background"
-            android:textSize="16sp">
+            android:textSize="16sp"
+            android:layout_marginBottom="16dp" />
 
-        </EditText>
-
-
+        <!-- Search Results Section -->
         <LinearLayout
-
             android:id="@+id/search_result_layout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
             android:orientation="horizontal"
             android:gravity="center_vertical"
-            android:background="#817474">
+            android:background="@drawable/message_bubble_right"
+            android:layout_marginTop="8dp"
+            android:padding="12dp">
 
+                <!-- User Image -->
                 <ImageView
                     android:id="@+id/imageSearchUser"
                     android:layout_width="60dp"
                     android:layout_height="60dp"
-                    android:layout_marginEnd="10dp"
-                    android:background="#999898"
+                    android:layout_marginEnd="12dp"
                     android:src="@drawable/img"
                     android:scaleType="centerCrop"
-                  />
+                   />
 
+                <!-- User Info -->
                 <TextView
                     android:id="@+id/result_name"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_weight="0.85"
+                    android:layout_weight="1"
                     android:text="User Info"
-                    android:textSize="15sp"
-                    android:textColor="@android:color/white"
+                    android:textColor="@android:color/black"
+                    android:textSize="20dp"
                     android:ellipsize="end"
                     android:maxLines="2"
-                    android:layout_marginEnd="8dp"
-                    android:lineSpacingExtra="2dp" />
+                    android:lineSpacingExtra="2dp"
+                    android:textAppearance="?android:textAppearanceMedium" />
 
-                <!-- Button: Add Friend -->
+                <!-- Add Friend Button -->
                 <Button
                     android:id="@+id/add_friend_button"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginStart="8dp"
+                    android:background="@drawable/gradient_background"
+                    android:padding="8dp"
                     android:text="Add"
                     android:textColor="@android:color/white"
-                    android:textSize="14sp"
-                    android:background="@drawable/gradient_background"
-                    android:padding="8dp" />
+                    android:textSize="14sp" />
         </LinearLayout>
-
 
         <!-- Tabs for Friend, Requests, Invitation -->
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="40dp"
+            android:layout_height="48dp"
             android:orientation="horizontal"
-            android:layout_marginTop="20dp"
+            android:layout_marginTop="16dp"
             android:background="@android:color/darker_gray">
 
                 <TextView
@@ -80,10 +81,11 @@
                     android:layout_weight="1"
                     android:layout_height="match_parent"
                     android:gravity="center"
-                    android:text="Friend"
+                    android:text="Friends"
                     android:textSize="16sp"
                     android:textColor="@android:color/white"
-                    android:background="?android:attr/selectableItemBackground" />
+                    android:background="?android:attr/selectableItemBackground"
+                    android:padding="8dp" />
 
                 <TextView
                     android:id="@+id/tvlistReq"
@@ -94,7 +96,8 @@
                     android:text="Requests"
                     android:textSize="16sp"
                     android:textColor="@android:color/white"
-                    android:background="?android:attr/selectableItemBackground" />
+                    android:background="?android:attr/selectableItemBackground"
+                    android:padding="8dp" />
 
                 <TextView
                     android:id="@+id/tvlistInvatition"
@@ -102,21 +105,23 @@
                     android:layout_weight="1"
                     android:layout_height="match_parent"
                     android:gravity="center"
-                    android:text="Invitation"
+                    android:text="Invitations"
                     android:textSize="16sp"
                     android:textColor="@android:color/white"
-                    android:background="?android:attr/selectableItemBackground" />
+                    android:background="?android:attr/selectableItemBackground"
+                    android:padding="8dp" />
         </LinearLayout>
 
-        <!-- Friend List Section -->
+        <!-- RecyclerView: Friend List Section -->
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/lvFriend"
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:layout_marginTop="20dp"
+            android:layout_marginTop="16dp"
             android:layout_weight="1"
             android:divider="@android:color/darker_gray"
             android:dividerHeight="1dp"
-            android:padding="10dp"/>
+            android:padding="10dp"
+            android:layout_gravity="center"/>
 
 </LinearLayout>
