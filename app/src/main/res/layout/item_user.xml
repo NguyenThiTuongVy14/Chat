@@ -4,49 +4,59 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="60dp"
-    android:id="@+id/mainUser"
-    android:background="@drawable/bg_friend">
+    android:background="@drawable/bg_friend"
+    android:layout_marginTop=".5dp">
 
-    <ImageView
-        android:id="@+id/imgItemUser"
-        android:layout_width="50dp"
-        android:layout_height="50dp"
-        android:layout_marginStart="16dp"
-        android:scaleType="centerCrop"
+
+    <LinearLayout
+        android:id="@+id/mainUser"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
         app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/btnItemUser"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.5" />
+        app:layout_constraintVertical_bias="0.4">
 
-    <TextView
-        android:id="@+id/infoItemUser"
-        android:layout_width="0dp"
-        android:layout_height="32dp"
-        android:text="Tên Người Dùng"
-        android:textSize="16sp"
-        android:textColor="@android:color/black"
-        android:textStyle="bold"
-        android:layout_marginStart="8dp"
-        app:layout_constraintBottom_toBottomOf="@id/imgItemUser"
-        app:layout_constraintStart_toEndOf="@id/imgItemUser"
-        app:layout_constraintTop_toTopOf="@id/imgItemUser"
-        app:layout_constraintEnd_toStartOf="@id/btnItemUser" />
+        <androidx.cardview.widget.CardView
+            android:id="@+id/cardView"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_marginLeft="8dp"
+            app:cardCornerRadius="999dp"
+            app:cardElevation="0dp">
 
-    <com.google.android.material.button.MaterialButton
+            <ImageView
+                android:id="@+id/imgItemUser"
+                android:layout_width="50dp"
+                android:layout_height="50dp" />
+        </androidx.cardview.widget.CardView>
+
+        <TextView
+            android:id="@+id/infoItemUser"
+            android:layout_width="220dp"
+            android:layout_height="32dp"
+            android:layout_marginStart="10dp"
+            android:text="User Name"
+            android:textSize="18sp"
+            android:layout_gravity="center_vertical"
+            app:layout_constraintBottom_toBottomOf="@id/imgItemUser"
+            app:layout_constraintStart_toEndOf="@id/imgItemUser"
+            app:layout_constraintTop_toTopOf="@id/imgItemUser" />
+    </LinearLayout>
+
+    <Button
+
         android:id="@+id/btnItemUser"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginEnd="4dp"
         android:text="Add"
-        android:textColor="@android:color/white"
-        android:paddingStart="16dp"
-        android:paddingEnd="16dp"
-        android:textSize="14sp"
-        android:background="@drawable/bg_friend"
-        app:layout_constraintBottom_toBottomOf="@id/imgItemUser"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="1.0"
-        app:layout_constraintStart_toEndOf="@id/infoItemUser"
-        app:layout_constraintTop_toTopOf="@id/imgItemUser"
-        app:layout_constraintVertical_bias="0.5" />
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.416" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

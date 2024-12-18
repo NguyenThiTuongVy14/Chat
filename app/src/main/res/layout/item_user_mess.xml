@@ -22,35 +22,37 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toBottomOf="parent" />
 
+    <!-- Last Message -->
     <TextView
         android:id="@+id/tv_user_name"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:text="User Name"
-        android:textSize="16sp"
         android:textColor="@android:color/black"
+        android:textSize="18sp"
         android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.142"
         app:layout_constraintStart_toEndOf="@id/img_user_avatar"
         app:layout_constraintTop_toTopOf="@id/img_user_avatar"
-        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintWidth_percent="0.7" />
 
-    <!-- Last Message -->
+    <!-- Last Active Time -->
     <TextView
         android:id="@+id/tv_last_message"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:text="This is the last message..."
-        android:textSize="14sp"
-        android:textColor="#C8C8C8"
         android:ellipsize="end"
         android:maxLines="1"
+        android:text="This is the last message..."
+        android:textColor="#D1D1D1"
+        android:textSize="14sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.142"
         app:layout_constraintStart_toEndOf="@id/img_user_avatar"
         app:layout_constraintTop_toBottomOf="@id/tv_user_name"
-        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintWidth_percent="0.7" />
 
-    <!-- Last Active Time -->
     <TextView
         android:id="@+id/tv_last_active"
         android:layout_width="wrap_content"

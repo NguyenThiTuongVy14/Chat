@@ -14,6 +14,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.example.chat.ImageProcessing;
 import com.example.chat.KEYWORD.KeyWord;
 import com.example.chat.Preference.PreferencManager;
 import com.example.chat.R;
@@ -37,7 +38,7 @@ public class Profile_Fragment extends Fragment {
     private String mParam1;
     private String mParam2;
     private FirebaseFirestore dbStore = FirebaseFirestore.getInstance();
-    private ImageView imgProfile,menu_ic;
+    private ImageView imgProfile;
     private TextView tvName;
     private View layout_logout;
     private PreferencManager preferencManager;
@@ -89,7 +90,7 @@ public class Profile_Fragment extends Fragment {
         tvName.setText(preferencManager.getString(KeyWord.KEY_FULL_NAME));
         String base64Image = preferencManager.getString("image");
         if (base64Image != null && !base64Image.isEmpty()) {
-            imgProfile.setImageBitmap(base64ToBitmap(base64Image));
+            imgProfile.setImageBitmap(ImageProcessing.base64ToBitmap(base64Image));
         } else {
             imgProfile.setImageResource(R.drawable.img);
         }
@@ -107,7 +108,7 @@ public class Profile_Fragment extends Fragment {
                     tvName.setText(name+"\n"+numberPhone);
 
                     if (base64Image != null && !base64Image.isEmpty()) {
-                        imgProfile.setImageBitmap(base64ToBitmap(base64Image));
+                        imgProfile.setImageBitmap(ImageProcessing.base64ToBitmap(base64Image));
                     } else {
                         imgProfile.setImageResource(R.drawable.img);
                     }
@@ -131,17 +132,5 @@ public class Profile_Fragment extends Fragment {
 
 
 
-    public Bitmap base64ToBitmap(String base64String) {
-        try {
-            byte[] decodedString = Base64.decode(base64String, Base64.DEFAULT);
-            Bitmap decodedByte = BitmapFactory.decodeByteArray(decodedString, 0, decodedString.length);
-            return decodedByte;
-        } catch (IllegalArgumentException e) {
-            e.printStackTrace();
-            return null;
-        } catch (OutOfMemoryError e) {
-            e.printStackTrace();
-            return null;
-        }
-    }
+
 }

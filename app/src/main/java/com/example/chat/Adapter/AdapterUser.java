@@ -3,6 +3,7 @@ package com.example.chat.Adapter;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.util.Base64;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,8 +12,10 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.constraintlayout.widget.ConstraintSet;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -27,6 +30,8 @@ import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.text.SimpleDateFormat;
+import java.time.Duration;
+import java.time.Instant;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
@@ -98,11 +103,11 @@ public class AdapterUser extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
                     accept(user.getNumberPhone(), position);
                 }
             });
-            ((UserViewHolder)holder).btn.setOnClickListener(view -> {
-                if (listener != null) {
-                    listener.onItemClick(user);
-                }
-            });
+//            ((UserViewHolder)holder).btn.setOnClickListener(view -> {
+//                if (listener != null) {
+//                    listener.onItemClick(user);
+//                }
+//            });
             ((UserViewHolder)holder).main.setOnClickListener(view -> {
                 if (listener != null) {
                     listener.onItemClick(user);
@@ -133,31 +138,26 @@ public class AdapterUser extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
 
     }
-    private String getStringTime(long milisec){
-        String timestamp="";
-        long s = milisec/1000;
-        if(s<60){
-            timestamp=s+ " sec ago";
-        } else
-        {
-            long m= s/60;
-            if(m<60){
-                timestamp=m+" minute ago";
-            }
-            else{
-                long h = m/60;
-                if(h<24){
-                    timestamp=m+" hour ago";
-                }
-                else{
-                    long day = h/24;
-                    timestamp=day+ " day ago";
-                }
-            }
-
+    private String getStringTime(long milisec) {
+        long seconds = milisec / 1000;
+        long minutes = seconds / 60;
+        long hours = minutes / 60;
+        long days = milisec / (24 * 60 * 60 * 1000);
+        if (seconds < 60) {
+            return seconds + " s";
         }
-        return timestamp;
+        else if (minutes < 60) {
+            return minutes + (minutes > 1 ? " minutes" : " minute") + " ago";
+        }
+        else if (hours < 24) {
+            return hours + (hours > 1 ? " hours" : " hour") + " ago";
+        }
+        else {
+            return days + (days > 1 ? " days" : " day") + " ago";
+        }
     }
+
+
 
     public void setOnItemClickListener(OnItemClickListener listener) {
         this.listener = listener;
@@ -198,6 +198,7 @@ public class AdapterUser extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
                         userList.remove(pos);
                         notifyItemRemoved(pos);
                     }
+                    Log.e("fail_accept","faile");
                 });
     }
 
@@ -221,9 +222,7 @@ public class AdapterUser extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
         public ImageView img;
         public TextView tvInfo;
         public Button btn;
-        public View main;
-
-
+        public LinearLayout main;
         public UserViewHolder(@NonNull View itemView) {
             super(itemView);
             img = itemView.findViewById(R.id.imgItemUser);
@@ -237,7 +236,7 @@ public class AdapterUser extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
         public TextView timestampText;
         public ImageView imgUser;
         public TextView name;
-        public View main;
+        public ConstraintLayout main;
 
         public UesrMessageViewHolder(View view) {
             super(view);

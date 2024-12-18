@@ -4,25 +4,18 @@ import android.graphics.Bitmap;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
 import android.widget.ImageView;
 import android.widget.TextView;
 import androidx.recyclerview.widget.RecyclerView;
-
 import com.example.chat.ImageProcessing;
 import com.example.chat.Model.Location;
 import com.example.chat.Model.Message;
-import com.example.chat.Model.User;
 import com.example.chat.R;
-import com.google.android.play.integrity.internal.l;
 import com.google.firebase.Timestamp;
-
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
-
-import javax.annotation.Nullable;
 
 public class MessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
@@ -68,7 +61,6 @@ public class MessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
         }
     }
 
-    // ViewHolder for Location Messages
     public static class LocationMessageSendViewHolder extends RecyclerView.ViewHolder {
         public ImageView mapView;
         public ImageView avt;
@@ -90,7 +82,6 @@ public class MessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
         }
     }
 
-    // Constructor for MessageAdapter
     public MessageAdapter(List<Message> messageList, String idSender, Bitmap base64ImageReciver, Bitmap base64ImageSender) {
         this.messageList = messageList;
         this.idSender = idSender;
@@ -98,7 +89,7 @@ public class MessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
         this.base64ImageSender = base64ImageSender;
     }
 
-    // Determine the view type (sent, received, or map)
+
     @Override
     public int getItemViewType(int position) {
         Message message = messageList.get(position);
@@ -115,7 +106,6 @@ public class MessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
         }
     }
 
-    // Create ViewHolder based on view type
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View itemView;
@@ -190,17 +180,13 @@ public class MessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
 
     private String getStringTimeStamp(Timestamp timestamp) {
         Date date = timestamp.toDate();
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault());
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm", Locale.getDefault());
         return sdf.format(date);
     }
-
-    // Get the number of messages in the list
     @Override
     public int getItemCount() {
         return messageList.size();
     }
-
-    // Add a new message to the list
     public void addMessage(Message message, int pos) {
         messageList.add(pos, message);
         notifyItemInserted(pos);

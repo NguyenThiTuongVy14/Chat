@@ -6,7 +6,9 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.os.Bundle;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
@@ -131,12 +133,24 @@ public class ScreenChat extends AppCompatActivity {
                 }
             }
         });
-
         shareLocation.setOnClickListener(v -> {
-            AlertDialog.Builder  builder = new AlertDialog.Builder(this);
-            builder.setTitle("Share location");
-            builder.setMessage("Are you sure share my location with " + us.getName());
-            builder.setPositiveButton("Yes",(dialog, which) -> {
+            String userName = us.getName();
+            LayoutInflater inflater = getLayoutInflater();
+            View dialogView = inflater.inflate(R.layout.dialog_builder, null);
+
+            AlertDialog.Builder builder = new AlertDialog.Builder(this);
+            builder.setView(dialogView)
+                    .setCancelable(false);
+
+            TextView dialogTitle = dialogView.findViewById(R.id.dialogTitle);
+            TextView dialogMessage = dialogView.findViewById(R.id.dialogMessage);
+            Button btnOk = dialogView.findViewById(R.id.btnOk);
+            Button btnCancel = dialogView.findViewById(R.id.btnCancel);
+            dialogTitle.setText("Share Location");
+            dialogMessage.setText("Are you sure you want to share your location with " + userName + "?");
+            AlertDialog dialog = builder.create();
+            dialog.show();
+            btnOk.setOnClickListener(v1 -> {
                 if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
                         != PackageManager.PERMISSION_GRANTED) {
                     ActivityCompat.requestPermissions(this,
@@ -145,10 +159,15 @@ public class ScreenChat extends AppCompatActivity {
                 } else {
                     sendLocationMessage();
                 }
+                dialog.dismiss();
             });
-            builder.setNegativeButton("No", null);
-            builder.setCancelable(false);
-            builder.show();
+
+
+            btnCancel.setOnClickListener(v1 -> {
+                dialog.dismiss();
+            });
+            dialog.show();
+
         });
         btnsend.setOnClickListener(view -> {
             if (chatRoomId != null && !edtMessage.getText().toString().isEmpty()) {
