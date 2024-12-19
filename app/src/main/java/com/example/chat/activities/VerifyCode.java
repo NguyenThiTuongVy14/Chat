@@ -9,19 +9,26 @@ import static com.example.chat.KEYWORD.KeyWord.KEY_PASS;
 import static com.example.chat.KEYWORD.KeyWord.KEY_PHONE;
 
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.example.chat.KEYWORD.KeyWord;
 import com.example.chat.R;
 import com.example.chat.firebase.AuthService;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.PhoneAuthCredential;
 import com.google.firebase.auth.PhoneAuthProvider;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.HashMap;
 
@@ -109,32 +116,62 @@ public class VerifyCode extends AppCompatActivity implements AuthService.AuthCal
     private void signUp() {
         FirebaseFirestore db = FirebaseFirestore.getInstance();
         String password = reIntent.getStringExtra("password");
-        db.collection(KEY_COLECTION_USER)
-                .whereEqualTo(KEY_PHONE, phone)
-                .get()
-                .addOnCompleteListener(task -> {
-                    if (task.isSuccessful() && task.getResult() != null && task.getResult().isEmpty()) {
-                        HashMap<String, Object> user = new HashMap<>();
-                        user.put(KEY_PHONE, phone);
-                        user.put(KEY_PASS, password);
-                        user.put(KEY_FULL_NAME,"");
-                        user.put("image","");
-                        user.put(KEY_IS_SET_PROFILE,false);
-                        user.put(KEY_FMC_TOKEN,"");
-                        db.collection(KEY_COLECTION_USER).add(user)
-                                .addOnSuccessListener(documentReference -> {
-                                    showToast("Sign Up is Successful");
-                                    Intent intent = new Intent(getApplicationContext(), Login.class);
-                                    intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                                    startActivity(intent);
-                                })
-                                .addOnFailureListener(exception -> {
-                                    showToast("Sign Up Fail");
-                                });
-                    } else {
-                        showToast("Phone number already exists");
-                    }
-                });
+//        db.collection(KEY_COLECTION_USER)
+//                .whereEqualTo(KEY_PHONE, phone)
+//                .get()
+//                .addOnCompleteListener(task -> {
+//                    if (task.isSuccessful() && task.getResult() != null && task.getResult().isEmpty()) {
+//                        HashMap<String, Object> user = new HashMap<>();
+//                        user.put(KEY_PHONE, phone);
+//                        user.put(KEY_PASS, password);
+//                        user.put(KEY_FULL_NAME,"");
+//                        user.put("image","");
+//                        user.put(KEY_IS_SET_PROFILE,false);
+//                        user.put(KEY_FMC_TOKEN,"");
+//                        db.collection(KEY_COLECTION_USER).add(user)
+//                                .addOnSuccessListener(documentReference -> {
+//                                    showToast("Sign Up is Successful");
+//                                    Intent intent = new Intent(getApplicationContext(), Login.class);
+//                                    intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+//                                    startActivity(intent);
+//                                })
+//                                .addOnFailureListener(exception -> {
+//                                    showToast("Sign Up Fail");
+//                                });
+//                    } else {
+//                        showToast("Phone number already exists");
+//                    }
+//                });
+        db.collection(KEY_COLECTION_USER).whereEqualTo(KEY_PHONE,phone).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                if(task!=null && task.getResult().size()>0){
+                    showToast("Phone number already exists");
+                }
+                else {
+                    HashMap<String, Object> user = new HashMap<>();
+                    user.put(KEY_FMC_TOKEN,"");
+                    user.put(KEY_FULL_NAME,"");
+                    user.put("img","");
+                    user.put(KEY_PHONE,phone);
+                    user.put(KEY_PASS,password);
+                    user.put(KEY_IS_SET_PROFILE,false);
+                    db.collection(KEY_COLECTION_USER).add(user)
+                            .addOnSuccessListener(documentReference -> {
+                                showToast("Sign Up is Successful");
+                                Intent intent=new Intent(VerifyCode.this,Login.class);
+                                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK|Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                                startActivity(intent);
+                            })
+                            .addOnFailureListener(new OnFailureListener() {
+                                @Override
+                                public void onFailure(@NonNull Exception e) {
+                                    showToast("SignIn Fail");
+                                }
+                            });
+                }
+            }
+        });
     }
 
 

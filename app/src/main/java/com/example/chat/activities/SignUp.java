@@ -20,6 +20,7 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.HashMap;
+import java.util.regex.Pattern;
 
 public class SignUp extends AppCompatActivity{
 
@@ -37,7 +38,7 @@ public class SignUp extends AppCompatActivity{
         binding.backLogin.setOnClickListener(v -> onBackPressed());
         binding.btnSignUp.setOnClickListener(v -> {
             if (isVailed()) {
-                number=binding.txtEmailSU.getText().toString();
+                number=binding.txtPhoneSU.getText().toString();
 
                 if (!number.isEmpty() && number.length() == 10) {
                     if (number.charAt(0)=='0'){
@@ -48,39 +49,50 @@ public class SignUp extends AppCompatActivity{
                         startActivity(i);
                     }
                     else
-                        binding.txtEmailSU.setError("Must be VietNamese Number Phone");
+                        binding.txtPhoneSU.setError("Must be VietNamese Number Phone");
 
                 }
                 else
-                    binding.txtEmailSU.setError("Number Phone is Invalid");
+                    binding.txtPhoneSU.setError("Number Phone is Invalid");
             }
         });
 
     }
 
     private boolean isVailed() {
-        if (binding.txtEmailSU.getText().toString().trim().isEmpty())
+        String txtPhone=binding.txtPhoneSU.getText().toString().trim();
+        String txtRePass=binding.txtRePassSU.getText().toString();
+        String txtPass=binding.txtPassSU.getText().toString();
+        String regex="^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[\\W_]).{6,}$";
+        if (txtPhone.isEmpty())
         {
-            binding.txtEmailSU.setError("Enter Number Phone");
+            binding.txtPhoneSU.setError("Enter Number Phone");
             return false;
         }
-        else if (binding.txtPassSU.getText().toString().trim().isEmpty())
+        else if (txtPass.isEmpty())
         {
             binding.txtPassSU.setError("Enter Password");
             return false;
         }
-        else
+        else if (Pattern.matches(regex,txtPass)) {
+            binding.txtPassSU.setError("Password invalid");
+            return false;
+        }
+        else if (!txtPass.equals(txtRePass)) {
+            binding.txtRePassSU.setError("Incorrect");
+            return false;
+        } else
             return true;
     }
-    private void loadActivity(Boolean load){
-        if(load){
-            binding.btnSignUp.setVisibility(View.INVISIBLE);
-
-        }
-
-        else {
-            binding.btnSignUp.setVisibility(View.VISIBLE);
-        }
-    }
+//    private void loadActivity(Boolean load){
+//        if(load){
+//            binding.btnSignUp.setVisibility(View.INVISIBLE);
+//
+//        }
+//
+//        else {
+//            binding.btnSignUp.setVisibility(View.VISIBLE);
+//        }
+//    }
 
 }
