@@ -1,9 +1,9 @@
 package com.example.chat.activities;
 
-
 import static com.example.chat.KEYWORD.KeyWord.KEY_COLECTION_USER;
 import static com.example.chat.KEYWORD.KeyWord.KEY_FMC_TOKEN;
 import static com.example.chat.KEYWORD.KeyWord.KEY_FULL_NAME;
+import static com.example.chat.KEYWORD.KeyWord.KEY_IMAGE;
 import static com.example.chat.KEYWORD.KeyWord.KEY_IS_SET_PROFILE;
 import static com.example.chat.KEYWORD.KeyWord.KEY_PASS;
 import static com.example.chat.KEYWORD.KeyWord.KEY_PHONE;
@@ -19,7 +19,9 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.chat.KEYWORD.KeyWord;
+import com.example.chat.Model.HassVerifyPass;
 import com.example.chat.R;
+import com.example.chat.activities.Login;
 import com.example.chat.firebase.AuthService;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
@@ -27,6 +29,7 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.PhoneAuthCredential;
 import com.google.firebase.auth.PhoneAuthProvider;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QuerySnapshot;
 
@@ -37,7 +40,9 @@ public class VerifyCode extends AppCompatActivity implements AuthService.AuthCal
     private EditText codeDigit1, codeDigit2, codeDigit3, codeDigit4,codeDigit5,codeDigit6;
     private Button verifyButton;
     private AuthService authService;
-    private String phone;
+    private String phone,newPass;
+    Boolean flag;
+
     private Intent reIntent;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -58,7 +63,12 @@ public class VerifyCode extends AppCompatActivity implements AuthService.AuthCal
 
         setUpOTPInputListeners();
         reIntent = getIntent();
+
         phone=reIntent.getStringExtra("phone");
+        flag=reIntent.getBooleanExtra("isForgotPassword",false);
+        newPass=reIntent.getStringExtra("newPassword");
+        newPass= HassVerifyPass.hashPassword(newPass);
+
         authService.sendOtp(formatNumberPhone(phone),this);
         verifyButton.setOnClickListener(view -> {
             String otpCode = codeDigit1.getText().toString()
@@ -105,7 +115,39 @@ public class VerifyCode extends AppCompatActivity implements AuthService.AuthCal
 
     @Override
     public void onSignInSuccess(FirebaseUser user) {
-        signUp();
+        if (flag){
+            updatePass();
+        }
+        else {
+            signUp();
+        }
+    }
+
+    private void updatePass() {
+        FirebaseFirestore db=FirebaseFirestore.getInstance();
+        db.collection(KEY_COLECTION_USER).whereEqualTo(KEY_PHONE,phone).get().addOnCompleteListener(task -> {
+            if (task.getResult()!=null&&task.isSuccessful()&&task.getResult().size()>0){
+                String documentId = task.getResult().getDocuments().get(0).getId();
+
+                db.collection(KEY_COLECTION_USER)
+                        .document(documentId)
+                        .update(KEY_PASS, newPass)
+                        .addOnSuccessListener(aVoid -> {
+                            showToast("Password updated successfully!");
+                            Intent intent = new Intent(VerifyCode.this, Login.class);
+                            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                            startActivity(intent);
+                        })
+                        .addOnFailureListener(e -> {
+                            showToast("Failed to update password: " + e.getMessage());
+                        });
+            } else {
+                showToast("Phone number not found!");
+            }
+                })
+                .addOnFailureListener(e -> {
+                    showToast("Error occurred: " + e.getMessage());
+                });
     }
 
     @Override
@@ -116,62 +158,33 @@ public class VerifyCode extends AppCompatActivity implements AuthService.AuthCal
     private void signUp() {
         FirebaseFirestore db = FirebaseFirestore.getInstance();
         String password = reIntent.getStringExtra("password");
-//        db.collection(KEY_COLECTION_USER)
-//                .whereEqualTo(KEY_PHONE, phone)
-//                .get()
-//                .addOnCompleteListener(task -> {
-//                    if (task.isSuccessful() && task.getResult() != null && task.getResult().isEmpty()) {
-//                        HashMap<String, Object> user = new HashMap<>();
-//                        user.put(KEY_PHONE, phone);
-//                        user.put(KEY_PASS, password);
-//                        user.put(KEY_FULL_NAME,"");
-//                        user.put("image","");
-//                        user.put(KEY_IS_SET_PROFILE,false);
-//                        user.put(KEY_FMC_TOKEN,"");
-//                        db.collection(KEY_COLECTION_USER).add(user)
-//                                .addOnSuccessListener(documentReference -> {
-//                                    showToast("Sign Up is Successful");
-//                                    Intent intent = new Intent(getApplicationContext(), Login.class);
-//                                    intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-//                                    startActivity(intent);
-//                                })
-//                                .addOnFailureListener(exception -> {
-//                                    showToast("Sign Up Fail");
-//                                });
-//                    } else {
-//                        showToast("Phone number already exists");
-//                    }
-//                });
-        db.collection(KEY_COLECTION_USER).whereEqualTo(KEY_PHONE,phone).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-            @Override
-            public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                if(task!=null && task.getResult().size()>0){
-                    showToast("Phone number already exists");
-                }
-                else {
-                    HashMap<String, Object> user = new HashMap<>();
-                    user.put(KEY_FMC_TOKEN,"");
-                    user.put(KEY_FULL_NAME,"");
-                    user.put("img","");
-                    user.put(KEY_PHONE,phone);
-                    user.put(KEY_PASS,password);
-                    user.put(KEY_IS_SET_PROFILE,false);
-                    db.collection(KEY_COLECTION_USER).add(user)
-                            .addOnSuccessListener(documentReference -> {
-                                showToast("Sign Up is Successful");
-                                Intent intent=new Intent(VerifyCode.this,Login.class);
-                                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK|Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                                startActivity(intent);
-                            })
-                            .addOnFailureListener(new OnFailureListener() {
-                                @Override
-                                public void onFailure(@NonNull Exception e) {
-                                    showToast("SignIn Fail");
-                                }
-                            });
-                }
-            }
-        });
+
+        db.collection(KEY_COLECTION_USER)
+                .whereEqualTo(KEY_PHONE, phone)
+                .get()
+                .addOnCompleteListener(task -> {
+                    if (task.isSuccessful() && task.getResult() != null && task.getResult().isEmpty()) {
+                        HashMap<String, Object> user = new HashMap<>();
+                        user.put(KEY_PHONE, phone);
+                        user.put(KEY_PASS, HassVerifyPass.hashPassword(password));
+                        user.put(KEY_FULL_NAME,"");
+                        user.put("image","");
+                        user.put(KEY_IS_SET_PROFILE,false);
+                        user.put(KEY_FMC_TOKEN,"");
+                        db.collection(KEY_COLECTION_USER).add(user)
+                                .addOnSuccessListener(documentReference -> {
+                                    showToast("Sign Up is Successful");
+                                    Intent intent = new Intent(getApplicationContext(), Login.class);
+                                    intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                                    startActivity(intent);
+                                })
+                                .addOnFailureListener(exception -> {
+                                    showToast("Sign Up Fail");
+                                });
+                    } else {
+                        showToast("Phone number already exists");
+                    }
+                });
     }
 
 

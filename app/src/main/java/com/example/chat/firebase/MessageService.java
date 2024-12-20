@@ -34,10 +34,9 @@ public class MessageService extends FirebaseMessagingService {
     public void onMessageReceived(@NonNull RemoteMessage message) {
         super.onMessageReceived(message);
 
-        // Kiểm tra quyền POST_NOTIFICATIONS trước khi hiển thị thông báo
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED) {
             Log.d("FCM", "Permission not granted, cannot show notification.");
-            return; // Không hiển thị thông báo nếu quyền chưa được cấp
+            return;
         }
 
         // Nếu có thông báo, hiển thị thông báo

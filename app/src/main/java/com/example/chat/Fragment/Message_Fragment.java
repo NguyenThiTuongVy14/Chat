@@ -107,7 +107,12 @@ public class Message_Fragment extends Fragment {
                                 getUser(idUser).thenAccept(user -> {
                                     if (user != null) {
                                         Message newMess = new Message();
-                                        newMess.setMessage(chatRoom.getString("newMess"));
+                                        if (chatRoom.getString("newMess")==null){
+                                            newMess.setMessage("Map location image");
+                                        }
+                                        else {
+                                            newMess.setMessage(chatRoom.getString("newMess"));
+                                        }
                                         Timestamp time = chatRoom.getTimestamp("time");
                                         newMess.setTimestamp(time);
                                         user.setNewMess(newMess);

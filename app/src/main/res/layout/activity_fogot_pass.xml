@@ -1,10 +1,66 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".activities.FogotPass">
+    android:orientation="vertical"
+    android:gravity="center"
+    android:padding="16dp"
+    android:background="#F5F5FF"
+    tools:context=".activities.ForgotPass">
+    <ImageView
+        android:layout_width="64dp"
+        android:layout_height="64dp"
+        android:src="@drawable/lock"
+        android:layout_gravity="center"
+        app:tint="#C4A6F1" />
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Forgot your password?"
+        android:textSize="18sp"
+        android:textStyle="bold"
+        android:layout_marginTop="16dp"
+        android:gravity="center" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Enter your phone number to reset it!"
+        android:textSize="14sp"
+        android:layout_marginTop="8dp"
+        android:gravity="center" />
+
+    <EditText
+        android:id="@+id/txtPhone"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Enter your phone number"
+        android:inputType="phone"
+        android:layout_marginTop="16dp"
+        android:background="@drawable/input_background"
+        android:padding="12dp" />
+
+    <Button
+        android:id="@+id/btnConfirm"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Confirm"
+        android:layout_marginTop="16dp"
+        android:backgroundTint="#C4A6F1"
+        android:textColor="#FFFFFF"
+        android:padding="12dp" />
+
+    <TextView
+        android:id="@+id/returnLogin"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="← Return to the login screen"
+        android:textSize="14sp"
+        android:textColor="#7A7A7A"
+        android:layout_marginTop="16dp"
+        android:gravity="center" />
+</LinearLayout>

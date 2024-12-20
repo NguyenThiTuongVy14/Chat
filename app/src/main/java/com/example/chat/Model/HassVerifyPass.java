@@ -1,6 +1,8 @@
 package com.example.chat.Model;
 
-public class HashPass {
+import org.mindrot.jbcrypt.BCrypt;
+
+public class HassVerifyPass {
     public static String hashPassword(String password) {
         return BCrypt.hashpw(password, BCrypt.gensalt());
     }

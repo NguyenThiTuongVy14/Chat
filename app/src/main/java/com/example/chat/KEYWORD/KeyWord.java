@@ -12,6 +12,8 @@ public class KeyWord {
     public final static String KEY_FULL_NAME = "fullName";
     public final static String KEY_FMC_TOKEN = "fmcToken";
     public final static String KEY_COLECTION_MESSAGE = "message";
+    public final static String KEY_IMAGE = "image";
+
 
 
 

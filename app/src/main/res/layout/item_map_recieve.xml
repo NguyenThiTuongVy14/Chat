@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    >
+    android:layout_marginTop="8dp">
 
     <ImageView
         android:id="@+id/imageAVT"
@@ -22,10 +22,10 @@
         android:layout_width="200dp"
         android:layout_height="120dp"
         android:layout_marginEnd="140dp"
-        android:background="@drawable/mapview"
+        android:background="@drawable/kalaharimap"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintHorizontal_bias="0.428"
         app:layout_constraintStart_toEndOf="@+id/imageAVT"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.0" />

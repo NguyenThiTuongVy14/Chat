@@ -84,4 +84,7 @@ dependencies {
     implementation ("com.google.android.gms:play-services-maps:18.0.2")
     implementation ("com.google.android.gms:play-services-location:18.0.0")
 
+    //hashpass
+    implementation ("org.mindrot:jbcrypt:0.4")
+
 }

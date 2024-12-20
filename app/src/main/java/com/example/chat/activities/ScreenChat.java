@@ -83,6 +83,7 @@ public class ScreenChat extends AppCompatActivity {
             return insets;
         });
 
+
         db = FirebaseFirestore.getInstance();
         preferencManager = new PreferencManager(this);
         tvName = findViewById(R.id.tvName);

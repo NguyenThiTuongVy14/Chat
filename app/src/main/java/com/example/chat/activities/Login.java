@@ -9,13 +9,12 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
 
-import androidx.activity.result.ActivityResultCallback;
-import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
 import com.example.chat.KEYWORD.KeyWord;
+import com.example.chat.Model.HassVerifyPass;
 import com.example.chat.Preference.PreferencManager;
 import com.example.chat.databinding.ActivityLoginBinding;
 import com.example.chat.firebase.NotificationSender;
@@ -23,7 +22,6 @@ import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.messaging.FirebaseMessaging;
 
-import java.security.Key;
 import java.util.HashMap;
 
 public class Login extends AppCompatActivity {
@@ -35,6 +33,7 @@ public class Login extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         db = FirebaseFirestore.getInstance();
+
         preferencManager = new PreferencManager(getApplicationContext());
         if(preferencManager.getBool(KeyWord.KEY_IS_LOGIN)){
             startMainActivity();
@@ -81,22 +80,28 @@ public class Login extends AppCompatActivity {
     }
 
     private void login(){
+        String phone=binding.txtEmailSI.getText().toString();
+        String pass=binding.txtPassSI.getText().toString();
+
 
         db.collection(KeyWord.KEY_COLECTION_USER)
-                .whereEqualTo(KeyWord.KEY_PHONE, binding.txtEmailSI.getText().toString())
-                .whereEqualTo(KeyWord.KEY_PASS, binding.txtPassSI.getText().toString())
+                .whereEqualTo(KeyWord.KEY_PHONE,phone)
                 .get().addOnCompleteListener(task -> {
+                    showToast(HassVerifyPass.hashPassword(pass));
                     if(task.isSuccessful()&&task.getResult()!=null && task.getResult().getDocuments().size()>0){
                         doc =task.getResult().getDocuments().get(0);
-                        preferencManager.putBool(KeyWord.KEY_IS_LOGIN,true);
-                        preferencManager.putString(KeyWord.KEY_USERID, doc.getId());
-                        preferencManager.putString(KeyWord.KEY_PHONE,doc.getString(KeyWord.KEY_PHONE));
-                        preferencManager.putString(KeyWord.KEY_FULL_NAME, doc.getString(KeyWord.KEY_FULL_NAME));
-                        preferencManager.putString("image", doc.getString("image"));
-                        preferencManager.putBool(KeyWord.KEY_IS_SET_PROFILE,doc.getBoolean(KeyWord.KEY_IS_SET_PROFILE));
-                        getFMC_Token();
-
-
+                        if(HassVerifyPass.verifyPassword(pass,doc.getString(KeyWord.KEY_PASS))){
+                            preferencManager.putBool(KeyWord.KEY_IS_LOGIN,true);
+                            preferencManager.putString(KeyWord.KEY_USERID, doc.getId());
+                            preferencManager.putString(KeyWord.KEY_PHONE,doc.getString(KeyWord.KEY_PHONE));
+                            preferencManager.putString(KeyWord.KEY_FULL_NAME, doc.getString(KeyWord.KEY_FULL_NAME));
+                            preferencManager.putString("image", doc.getString("image"));
+                            preferencManager.putBool(KeyWord.KEY_IS_SET_PROFILE,doc.getBoolean(KeyWord.KEY_IS_SET_PROFILE));
+                            getFMC_Token();
+                        }
+                        else {
+                            showToast("Number Phone or Password is incorrect");
+                        }
                     }
                     else if (task.getResult().getDocuments().size()<=0)
                         showToast("Number Phone or Password is incorrect");
@@ -119,7 +124,7 @@ public class Login extends AppCompatActivity {
                                 .update(updateUser)
                                 .addOnCompleteListener(taskUpdateUser -> {
                                     if(taskUpdateUser.isSuccessful()){
-                                        NotificationSender.sendNotification(this,token,"New login","login in viet nam",null);
+//                                        NotificationSender.sendNotification(this,token,"New login","login in viet nam",null);
                                         startMainActivity();
                                     }
                                     else
@@ -145,7 +150,12 @@ public class Login extends AppCompatActivity {
                 login();
             }
         });
+        binding.forgotPass.setOnClickListener(v -> {
+            Intent intent=new Intent(Login.this, ForgotPass.class);
+            startActivity(intent);
+        });
     }
+
     private void showToast(String message){
         Toast.makeText(getApplicationContext(), message, Toast.LENGTH_SHORT).show();
     }
